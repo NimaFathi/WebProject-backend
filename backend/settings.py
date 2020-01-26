@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'UserProfile',
     'Post',
+    'channel'
 ]
 
 REST_FRAMEWORK = {
