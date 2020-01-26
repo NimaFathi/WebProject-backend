@@ -1,11 +1,11 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import url
-import UserProfile
+from django.conf.urls import url 
 
 urlpatterns = [
     path('raeis/', admin.site.urls),
-    path('UserProfile/', include('UserProfile.urls')),
     url(r'^api-auth/', include('rest_framework.urls'), name='rest_framework'),
+    path('UserProfile/', include('UserProfile.urls')),
+    path('post/', include('Post.urls'))
 ]
