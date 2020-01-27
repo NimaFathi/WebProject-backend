@@ -14,6 +14,7 @@ class Card(models.Model):
     pictureContent = models.FileField(upload_to='images')
     voteUp = models.ManyToManyField(User , blank=True)
     voteDown = models.ManyToManyField(User, related_name='voteDown', blank=True)
+    date_Modified = models.DateTimeField(auto_now_add=True)
     
 
 class Comment(models.Model):
