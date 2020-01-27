@@ -9,4 +9,5 @@ urlpatterns = [
     path('UserProfile/', include('UserProfile.urls')),
     path('post/', include('Post.urls')),
     path('channel/', include('channel.urls')),
+    path('account/', include('account.urls')),
 ]
