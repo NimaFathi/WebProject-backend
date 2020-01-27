@@ -17,4 +17,6 @@ class hottest(viewsets.ModelViewSet):
     queryset = Card.objects.annotate(q_count=Count('voteUp')).order_by('-q_count')[:10]
     serializer_class = CardSerializer
 
-
+class newest(viewsets.ModelViewSet):
+    queryset = Card.objects.all().order_by('date_Modified')[:10]
+    serializer_class = CardSerializer
