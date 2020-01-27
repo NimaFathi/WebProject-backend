@@ -14,7 +14,7 @@ class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
 class hottest(viewsets.ModelViewSet):
-    queryset = Card.objects.annotate(q_count=Count('voteUp')).order_by('-q_count')[:7]
-    serializer_class = CommentSerializer
+    queryset = Card.objects.annotate(q_count=Count('voteUp')).order_by('-q_count')[:10]
+    serializer_class = CardSerializer
 
 
