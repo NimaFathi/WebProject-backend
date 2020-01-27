@@ -3,8 +3,9 @@ from . import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('cards', views.CardView)
-router.register('comments', views.CommentView)
+router.register(r'cards', views.CardView)
+router.register(r'comments', views.CommentView)
+router.register(r'hottest', views.hottest)
 
 urlpatterns = [
     path('', include(router.urls)),

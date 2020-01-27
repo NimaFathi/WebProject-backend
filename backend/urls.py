@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url 
 
+
 urlpatterns = [
     path('raeis/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls'), name='rest_framework'),
