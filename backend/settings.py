@@ -46,11 +46,8 @@ INSTALLED_APPS = [
     'Post',
     'channel',
     'account',
-<<<<<<< HEAD
     'rest_framework.authtoken'
-=======
     'django_filters'
->>>>>>> 9b205d257af871d55c265ce1bc1b3272a2ac9d4b
 ]
 
 REST_FRAMEWORK = {
