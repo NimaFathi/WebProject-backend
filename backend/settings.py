@@ -26,6 +26,7 @@ SECRET_KEY = 'stp2lqw9fdnx_%thr=p+e+vtvvy5((wy2r2shlj91c=_^1-ckc'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '*',
     '192.168.202.182',
     '127.0.0.1'
 ]
@@ -45,7 +46,11 @@ INSTALLED_APPS = [
     'Post',
     'channel',
     'account',
+<<<<<<< HEAD
     'rest_framework.authtoken'
+=======
+    'django_filters'
+>>>>>>> 9b205d257af871d55c265ce1bc1b3272a2ac9d4b
 ]
 
 REST_FRAMEWORK = {
