@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'UserProfile',
     'Post',
     'channel',
-    'account'
+    'account',
+    'rest_framework.authtoken'
 ]
 
 REST_FRAMEWORK = {
@@ -52,6 +53,9 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ]
 }
 

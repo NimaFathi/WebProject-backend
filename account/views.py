@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 
 from .serializers import RegistrationSerializer
-
+from rest_framework.authtoken.models import Token
 
 @api_view(['POST',])
 def registration_view(request):
@@ -17,6 +17,8 @@ def registration_view(request):
             data['email'] = account.email
             data['username'] = account.username
             data['id'] = account.pk
+            token = Token.obejects.get(user=account).key
+            data['token'] = token
         else:
             data = serializer.errors
         return Response(data)
