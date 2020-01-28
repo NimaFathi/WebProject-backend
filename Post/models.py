@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User 
-from UserProfile.models import UserProfile
+from account.models import Account
 # Create your models here.
 
 
@@ -13,8 +13,8 @@ class Card(models.Model):
     title = models.CharField(max_length=100)
     creatorName = models.CharField(max_length=50)
     pictureContent = models.FileField(upload_to='images')
-    voteUp = models.ManyToManyField(UserProfile , blank=True)
-    voteDown = models.ManyToManyField(UserProfile, related_name='voteDown', blank=True)
+    voteUp = models.ManyToManyField(Account , blank=True)
+    voteDown = models.ManyToManyField(Account, related_name='voteDown', blank=True)
     date_Modified = models.DateTimeField(auto_now_add=True)
     
 
@@ -25,7 +25,7 @@ class Comment(models.Model):
     userId = models.IntegerField(null=False, blank=False)
     username = models.CharField(max_length=50)
     content = models.TextField()
-    voteUp = models.ManyToManyField(UserProfile,related_name='voteUp', blank=True)
-    voteDown = models.ManyToManyField(UserProfile, blank=True)
+    voteUp = models.ManyToManyField(Account,related_name='voteUp', blank=True)
+    voteDown = models.ManyToManyField(Account, blank=True)
     picture = models.FileField(upload_to='images')
     time = models.DateField(auto_now_add=True)
