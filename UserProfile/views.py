@@ -8,7 +8,8 @@ from account.serializers import RegistrationSerializer
 
 class profile_view(APIView):
     def post(self, request):
-        user_id = int(request.data['user_id'])
-        account1 = Account.objects.filter(id = user_id)
-        serializer = RegistrationSerializer(account1, many = True)
-        return Response(serializer.data)
+        if(request.data['method'] == 'get_user'):
+            user_id = int(request.data['user_id'])
+            account1 = Account.objects.filter(id = user_id)
+            serializer = RegistrationSerializer(account1, many = True)
+            return Response(serializer.data)
