@@ -13,3 +13,10 @@ class profile_view(APIView):
             account1 = Account.objects.filter(id = user_id)
             serializer = RegistrationSerializer(account1, many = True)
             return Response(serializer.data)
+        
+        elif(request.data['method'] == 'update'):
+            user_id = int(request.data['user_id'])
+            account1 = Account.objects.filter(id = user_id)
+            account1.update(email = request.data['email'])
+            serializer = RegistrationSerializer(account1, many = True)
+            return Response(serializer.data)
