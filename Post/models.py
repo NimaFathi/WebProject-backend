@@ -17,7 +17,7 @@ class Card(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Card, on_delete=models.CASCADE)
-    parentId = models.IntegerField(null=True)
+    parentId = models.IntegerField(null=True, blank=True)
     author = models.ForeignKey(Account,on_delete=models.CASCADE, related_name = 'comment_authour', default = None)
     content = models.TextField()
     voteUp = models.ManyToManyField(Account,related_name='voteUp', blank=True)

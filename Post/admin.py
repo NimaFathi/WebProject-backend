@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Card, Comment
-
+from django.contrib.auth.admin import UserAdmin
 
 
 # Register your models here.
@@ -12,9 +12,9 @@ class CommentAdminInline(admin.StackedInline):
 
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
-    list_display = ('id' ,'title', 'author', 'channel')
-    search_fields = ('id','email', 'username')
-    readonly_fields = ('id', )
+    list_display = ('pk' ,'title', 'author', 'channel')
+    search_fields = ('pk','title',)
+    readonly_fields = ('pk', )
     inlines = (CommentAdminInline, )
     filter_horizontal = ()
     list_filter = ()

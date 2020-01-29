@@ -11,11 +11,11 @@ class CommentSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField("get_username_from_author")
     userId = serializers.SerializerMethodField("get_userId_from_author")
     picture = serializers.SerializerMethodField("get_picture_from_author")
-    
+
     
     class Meta:
         model = Comment
-        fields = ('id', 'post','parentId', 'userId', 'username', 'content', 'voteUp', 'voteDown', 'picture', 'time', )
+        fields = ('pk', 'post','parentId', 'userId', 'username', 'content', 'voteUp', 'voteDown', 'picture', 'time', )
 
     def get_username_from_author(self, comment):
         username = comment.author.username
