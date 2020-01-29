@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Account
 
 class RegistrationSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Account
         fields = ('username', 'email', 'password')
@@ -15,6 +16,13 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Account
 		fields = ['pk', 'emzail', 'username', ]
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Account
+        fields = ['email', 'username', 'password', 'occupy', 'bio']
 
 
 
