@@ -1,16 +1,14 @@
 from django.db import models
 from account.models import Account
+from channel.models import Channel
 # Create your models here.
 
 
 class Card(models.Model):
-    id = models.IntegerField(primary_key=True , default=1)
     textContent = models.TextField()
-    creatorPicture = models.FileField(upload_to='images')
-    adminId = models.IntegerField(blank=False , null=False)
-    authorId = models.IntegerField(blank=False , null=False)
+    author = models.ForeignKey(Account , null=False , on_delete=models.CASCADE, related_name='card_author' )
+    channel = models.ForeignKey(Channel , blank=True , null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    creatorName = models.CharField(max_length=50)
     pictureContent = models.FileField(upload_to='images')
     voteUp = models.ManyToManyField(Account , blank=True)
     voteDown = models.ManyToManyField(Account, related_name='voteDown', blank=True)
@@ -18,7 +16,6 @@ class Card(models.Model):
     
 
 class Comment(models.Model):
-    id = models.IntegerField(primary_key=True, default=1)
     post = models.ForeignKey(Card, on_delete=models.CASCADE)
     parentId = models.IntegerField(null=True)
     userId = models.IntegerField(null=False, blank=False)
@@ -27,4 +24,4 @@ class Comment(models.Model):
     voteUp = models.ManyToManyField(Account,related_name='voteUp', blank=True)
     voteDown = models.ManyToManyField(Account, blank=True)
     picture = models.FileField(upload_to='images')
-    time = models.DateField(auto_now_add=True)
+    time = models.DateField(auto_now_add=True, null=True)

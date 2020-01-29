@@ -22,7 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['email', 'username', 'password', 'occupy', 'bio']
+        fields = ['email', 'username', 'password', 'occupy', 'bio', 'card_set']
 
 
 
