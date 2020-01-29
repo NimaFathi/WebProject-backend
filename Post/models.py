@@ -23,5 +23,4 @@ class Comment(models.Model):
     content = models.TextField()
     voteUp = models.ManyToManyField(Account,related_name='voteUp', blank=True)
     voteDown = models.ManyToManyField(Account, blank=True)
-    picture = models.FileField(upload_to='images')
     time = models.DateField(auto_now_add=True, null=True)
