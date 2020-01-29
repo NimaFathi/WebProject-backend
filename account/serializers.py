@@ -14,7 +14,7 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Account
-		fields = ['pk', 'emzail', 'username', ]
+		fields = ['pk', 'email', 'username', ]
 
 
 
