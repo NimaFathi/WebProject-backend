@@ -2,10 +2,29 @@ from rest_framework import serializers
 from .models import Comment, Card
 
 class CardSerializer(serializers.ModelSerializer):
-
+    creatorPicture = serializers.SerializerMethodField("get_creatorPicture_from_author")
+    adminId = serializers.SerializerMethodField("get_adminId_from_channel")
+    authorId = serializers.SerializerMethodField("get_authorId_from_author")
+    creatorName = serializers.SerializerMethodField("get_creatorName_from_author")
     class Meta:
         model = Card
-        fields = ('id', 'textContent', 'creatorPicture', 'adminId', 'authorId', 'title', 'creatorName', 'pictureContent', 'comment_set', 'voteUp', 'voteDown')
+        fields = ('pk', 'textContent', 'creatorPicture', 'adminId', 'authorId', 'title', 'creatorName', 'pictureContent', 'comment_set', 'voteUp', 'voteDown')
+
+    def get_creatorPicture_from_author(self, card):
+        creatorPicture = card.author.avatar
+        return creatorPicture
+
+    def get_adminId_from_channel(self, card):
+        return 1
+
+    def get_authorId_from_author(self, card):
+        return card.author.pk
+    
+    def get_creatorName_from_author(self, card):
+        return card.author.username
+
+
+
 
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField("get_username_from_author")
@@ -21,7 +40,7 @@ class CommentSerializer(serializers.ModelSerializer):
         username = comment.author.username
         return username
     def get_userId_from_author(self, comment):
-        usrId = comment.author.pk
+        userId = comment.author.pk
         return userId
     def get_picture_from_author(self, comment):
         picture = comment.author.avatar
