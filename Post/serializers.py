@@ -4,7 +4,7 @@ from .models import Comment, Card
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ('id', 'textContent', 'creatorPicture', 'adminId', 'authorId', 'title', 'creatorName', 'pictureContent', 'comment_set', 'voteUp', 'voteDown', )
+        fields = ('id', 'textContent', 'creatorPicture', 'adminId', 'authorId', 'title', 'creatorName', 'pictureContent', 'comment_set', 'voteUp', 'voteDown')
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

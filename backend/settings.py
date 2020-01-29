@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Post',
     'channel',
     'account',
+    'MainPage',
     'rest_framework.authtoken'
 ]
 
