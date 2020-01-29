@@ -5,7 +5,6 @@ from channel.models import Channel
 
 
 class Card(models.Model):
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, blank=True) 
     textContent = models.TextField()
     author = models.ForeignKey(Account , null=False , on_delete=models.CASCADE, related_name='card_author' )
     channel = models.ForeignKey(Channel , blank=True , null=True, on_delete=models.CASCADE)
