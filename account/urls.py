@@ -16,7 +16,7 @@ urlpatterns = [
 	path('change_password/', ChangePasswordView.as_view(), name="change_password"),
 	path('properties', account_properties_view, name="properties"),
 	path('properties/update', update_account_view, name="update"),
- 	path('login', ObtainAuthTokenView.as_view(), name="login"), 
+ 	path('login', obtain_auth_token, name="login"), 
 	path('register/', registration_view, name="register"),
 
 ]

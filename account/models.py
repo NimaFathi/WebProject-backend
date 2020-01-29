@@ -8,7 +8,6 @@ from rest_framework.authtoken.models import Token
 
 
 
-
 class MyAccountManager(BaseUserManager):
 
     def create_user(self, email, username, password=None):
