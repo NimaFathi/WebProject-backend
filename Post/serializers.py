@@ -17,7 +17,7 @@ class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
         fields = (
-        'pk', 'textContent', 'creatorPicture', 'adminId', 'author','authorId', 'title', 'creatorName', 'pictureContent',
+        'pk', 'textContent','creatorPicture', 'adminId', 'author','authorId', 'title', 'creatorName', 'pictureContent',
         'comment_set', 'voteUp', 'voteDown')
 
     def get_creatorPicture_from_author(self, card):
