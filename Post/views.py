@@ -14,11 +14,6 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> f80022add60e3ed57ea1ec7f238d837196a272e3
 SUCCESS = 'success'
 ERROR = 'error'
 DELETE_SUCCESS = 'deleted'
@@ -215,14 +210,8 @@ def create_card_view(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-<<<<<<< HEAD
-
-@api_view(['POST',])
-#@permission_classes((IsAuthenticated,))
-=======
 @api_view(['POST', ])
 @permission_classes((IsAuthenticated,))
->>>>>>> f80022add60e3ed57ea1ec7f238d837196a272e3
 def create_comment_view(request):
     if request.method == 'POST':
         data = request.data
@@ -238,8 +227,8 @@ def create_comment_view(request):
             data['userId'] = comment.author.pk
             data['username'] = comment.author.username
             data['content'] = comment.content
-            data['voteDown'] = comment.voteDown
-            data['voteUp'] = comment.voteUp
+            data['voteDown'] = comment.voteDown.all()
+            data['voteUp'] = comment.voteUp.all()
             image_url = str(request.build_absolute_uri(comment.author.avatar.url))
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]

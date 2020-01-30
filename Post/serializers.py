@@ -35,7 +35,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'parentId', 'userId', 'username', 'content', 'voteUp', 'voteDown', 'picture', 'time',)
+        fields = ('pk', 'post','author' ,'parentId', 'userId', 'username', 'content', 'voteUp', 'voteDown', 'picture', 'time',)
 
     def get_username_from_author(self, comment):
         username = comment.author.username
