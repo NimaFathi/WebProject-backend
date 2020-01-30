@@ -7,7 +7,7 @@ from channel.models import Channel
 
 class ChannelAdminInline(admin.StackedInline):
     model = Channel
-    extra = 0
+    extra = 1
 
 class PostAdminInline(admin.StackedInline):
     model = Card
@@ -21,6 +21,6 @@ class AccountAdmin(UserAdmin):
     filter_horizontal = ()
     list_filter = ()
     fieldsets = ()
-    inlines = (PostAdminInline, ChannelAdminInline )
+    inlines = (PostAdminInline, ChannelAdminInline ,)
 
 

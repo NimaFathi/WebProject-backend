@@ -120,6 +120,7 @@ def update_comment_view(request, id):
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
 def is_author_of_card(request, id):
+
     try:
         card = Card.objects.get(pk=id)
     except Card.DoesNotExist:

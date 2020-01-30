@@ -2,6 +2,12 @@ from rest_framework import serializers
 from .models import Comment, Card
 
 
+class cardi(serializers.ModelSerializer):
+    class Meta:
+        model = Card
+        field = '__all__'
+
+
 class CardSerializer(serializers.ModelSerializer):
     creatorPicture = serializers.SerializerMethodField("get_creatorPicture_from_author")
     adminId = serializers.SerializerMethodField("get_adminId_from_channel")
