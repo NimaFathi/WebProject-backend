@@ -6,8 +6,8 @@ from channel.models import Channel
 
 class Card(models.Model):
     textContent = models.TextField()
-    author = models.ForeignKey(Account , null=False , on_delete=models.CASCADE, related_name='card_author' )
-    channel = models.ForeignKey(Channel , blank=True , null=True, on_delete=models.CASCADE)
+    author = models.ForeignKey(Account , null=False , on_delete=models.CASCADE, related_name='card_author')
+    channel = models.ForeignKey(Channel , blank=True , null=True, on_delete=models.CASCADE, related_name='for_channel')
     title = models.CharField(max_length=100)
     pictureContent = models.ImageField(upload_to='images' , default='images/AI_HW1.png')
     voteUp = models.ManyToManyField(Account , blank=True)
@@ -18,7 +18,7 @@ class Card(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Card, on_delete=models.CASCADE)
     parentId = models.IntegerField(null=True, blank=True)
-    author = models.ForeignKey(Account,on_delete=models.CASCADE, related_name = 'comment_authour', default = None)
+    author = models.ForeignKey(Account,on_delete=models.CASCADE, related_name = 'comment_authour', default=None)
     content = models.TextField()
     voteUp = models.ManyToManyField(Account,related_name='voteUp', blank=True)
     voteDown = models.ManyToManyField(Account, blank=True)

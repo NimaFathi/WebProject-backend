@@ -7,6 +7,7 @@ from rest_framework import generics
 from account.serializers import RegistrationSerializer
 from account.serializers import ProfileSerializer
 
+
 class change_profile(APIView):
     def post(self, request):
         user_id = int(request.data['user_id'])
