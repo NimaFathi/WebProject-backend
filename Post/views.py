@@ -15,6 +15,9 @@ from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 
+
+
+
 SUCCESS = 'success'
 ERROR = 'error'
 DELETE_SUCCESS = 'deleted'
@@ -222,7 +225,7 @@ def create_card_view(request):
 
 
 @api_view(['POST',])
-@permission_classes((IsAuthenticated,))
+#@permission_classes((IsAuthenticated,))
 def create_comment_view(request):
     
     if request.method == 'POST':
