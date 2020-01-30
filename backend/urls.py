@@ -11,6 +11,6 @@ urlpatterns = [
     path('post/', include('Post.urls')),
     path('channel/', include('channel.urls')),
     path('account/', include('account.urls')),
-    path('mainpage/',include('MainPage.urls'))
+    path('mainpage/',include('MainPage.urls')),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]
