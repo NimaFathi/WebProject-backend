@@ -16,8 +16,6 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 
-
-
 SUCCESS = 'success'
 ERROR = 'error'
 DELETE_SUCCESS = 'deleted'
