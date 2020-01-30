@@ -228,8 +228,8 @@ def create_comment_view(request):
             data['userId'] = comment.author.pk
             data['username'] = comment.author.username
             data['content'] = comment.content
-            data['voteDown'] = comment.voteDown
-            data['voteUp'] = comment.voteUp
+            data['voteDown'] = comment.voteDown.all()
+            data['voteUp'] = comment.voteUp.all()
             image_url = str(request.build_absolute_uri(comment.author.avatar.url))
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]

@@ -9,7 +9,7 @@ class Card(models.Model):
     author = models.ForeignKey(Account , null=False , on_delete=models.CASCADE, related_name='card_author' )
     channel = models.ForeignKey(Channel , blank=True , null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    pictureContent = models.FileField(upload_to='images')
+    pictureContent = models.FileField(upload_to='images' , default='images/AI_HW1.png')
     voteUp = models.ManyToManyField(Account , blank=True)
     voteDown = models.ManyToManyField(Account, related_name='voteDown', blank=True)
     date_Modified = models.DateTimeField(auto_now_add=True)
