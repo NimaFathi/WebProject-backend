@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from Post.models import Comment, Card
-from Post.serializers import CommentSerializer, CardSerializer
+from Post.serializers import CardSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Count
