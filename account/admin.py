@@ -15,9 +15,9 @@ class PostAdminInline(admin.StackedInline):
 
 @admin.register(Account)
 class AccountAdmin(UserAdmin):
-    list_display = ('pk' ,'email', 'username', 'date_joined', 'last_login' , 'is_admin')
+    list_display = ('pk' ,'email', 'username', 'date_joined', 'last_login' , 'is_admin', )
     search_fields = ('pk','email', 'username')
-    readonly_fields = ('pk','date_joined' , 'last_login')
+    readonly_fields = ('pk','date_joined' , 'last_login', )
     filter_horizontal = ()
     list_filter = ()
     fieldsets = ()

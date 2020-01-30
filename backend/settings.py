@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'channel',
     'account',
     'MainPage',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'django_rest_passwordreset',
 ]
 
 REST_FRAMEWORK = {

@@ -8,6 +8,8 @@ from rest_framework.authtoken.models import Token
 
 
 
+from django.utils.html import mark_safe
+
 class MyAccountManager(BaseUserManager):
 
     def create_user(self, email, username, password=None):
@@ -68,9 +70,11 @@ class Account(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-
+    
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def cretae_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
