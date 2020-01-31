@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'account',
     'MainPage',
     'notifications',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'django_rest_passwordreset',
 ]
 
 REST_FRAMEWORK = {

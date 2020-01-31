@@ -206,7 +206,9 @@ def create_card_view(request):
             image_url = str(request.build_absolute_uri(card.pictureContent.url))
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
+            image_url = image_url.encode('utf-8').strip()
             data['pictureContent'] = image_url
+            data['creatorPicture'] = card.author.avatar
             return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -234,6 +236,6 @@ def create_comment_view(request):
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
             data['picture'] = image_url
-            data['time'] = comment.time
+            data['time'] = comment.time.encode
             return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
