@@ -24,6 +24,7 @@ SECRET_KEY = 'stp2lqw9fdnx_%thr=p+e+vtvvy5((wy2r2shlj91c=_^1-ckc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = [
     '*',
     '192.168.202.182',
@@ -55,6 +56,7 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
