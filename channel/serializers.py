@@ -9,3 +9,9 @@ class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
         fields = '__all__'
+
+
+class search_channel_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Channel
+        fields = ('pk', 'name', 'picture')

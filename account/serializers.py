@@ -4,6 +4,12 @@ from .models import Account
 from django.contrib.auth.hashers import make_password
 
 
+class account_search_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ('username', 'pk', 'avatar')
+
+
 class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:

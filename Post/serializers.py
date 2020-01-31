@@ -2,10 +2,10 @@ from rest_framework import serializers
 from .models import Comment, Card
 
 
-class cardi(serializers.ModelSerializer):
+class search_card_serializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        field = '__all__'
+        fields = ('pk', 'title', 'pictureContent')
 
 
 class CardSerializer(serializers.ModelSerializer):
