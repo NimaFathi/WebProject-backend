@@ -6,9 +6,12 @@ from account.views import(
 	update_account_view,
 	does_account_exist_view,
 	ChangePasswordView,
+	SocialLoginView,
+	Logout
+
 )
 from rest_framework.authtoken.views import obtain_auth_token
-
+from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
@@ -21,7 +24,9 @@ urlpatterns = [
 	path('change_password/', ChangePasswordView.as_view(), name="change_password"),
 	path('properties', account_properties_view, name="properties"),
 	path('properties/update', update_account_view, name="update"),
-    path('login/',TokenObtainPairView.as_view(), name="login"),
+    path('login/',ObtainAuthTokenView.as_view(), name="login"),
 	path('register/', registration_view, name="register"),
+	path('logout/', Logout.as_view(),name='logout'),
+	path('oauth/login/', SocialLoginView.as_view())
 
 ]

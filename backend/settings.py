@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'search',
     'rest_framework.authtoken',
     'django_rest_passwordreset',
+    'social_django',
 ]
 
 REST_FRAMEWORK = {
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -141,3 +143,39 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+
+
+AUTHENTICATION_BACKENDS = (
+    
+    # Google OAuth2
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
+    
+
+    # django-rest-framework-social-oauth2
+    #'rest_framework_social_oauth2.backends.DjangoOAuth2',
+
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Google configuration
+SOCIAL_AUTH_GOOGLE_KEY = '118160517155-e1t588sep7u24grv3r16t11d0phdknm6.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_SECRET = 'gUXWtIOZ5ie0kkXZfA_UQAi2'
+
+# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.
+# Email is not sent by default, to get it, you must request the email permission.
+SOCIAL_AUTH_GOOOGLE_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, username, email'
+}
+
+
+LOGIN_URL = '/auth/login/google-oauth2/'
+
+LOGIN_REDIRECT_URL = 'localhost:8000/mainpage'
+LOGOUT_REDIRECT_URL = 'localhost:8000/mainpage'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'

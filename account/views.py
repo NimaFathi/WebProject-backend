@@ -9,10 +9,100 @@ from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-from .serializers import RegistrationSerializer, AccountPropertiesSerializer, ChangePasswordSerializer
+from .serializers import RegistrationSerializer, AccountPropertiesSerializer, ChangePasswordSerializer, SocialSerializer
 from account.models import Account
-from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import RefreshToken , AccessToken
+
+
+from django.http import JsonResponse
+from rest_framework import generics, permissions, status, views
+from rest_framework.response import Response
+from requests.exceptions import HTTPError
+ 
+from social_django.utils import load_strategy, load_backend
+from social_core.backends.oauth import BaseOAuth2
+from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
+
+from django.contrib.auth import logout
+
+class Logout(APIView):
+    def get(self, request, format=None):
+        # simply delete the token to force a login
+        logout(request)
+        data = {'Response':'successful'}
+        return Response(data)
+
+
+
+
+class SocialLoginView(generics.GenericAPIView):
+    """Log in using google"""
+    serializer_class = SocialSerializer
+    permission_classes = [permissions.AllowAny]
+ 
+    def post(self, request):
+        """Authenticate user through the provider and access_token"""
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        provider = serializer.data.get('provider', None)
+        strategy = load_strategy(request)
+ 
+        try:
+            backend = load_backend(strategy=strategy, name=provider,
+            redirect_uri='localhost:8000/mainpage')
+ 
+        except MissingBackend:
+            return Response({'error': 'Please provide a valid provider'},
+            status=status.HTTP_400_BAD_REQUEST)
+        try:
+            if isinstance(backend, BaseOAuth2):
+                access_token = serializer.data.get('access_token')
+            user = backend.do_auth(access_token)
+        except HTTPError as error:
+            return Response({
+                "error": {
+                    "access_token": "Invalid token",
+                    "details": str(error)
+                }
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except AuthTokenError as error:
+            return Response({
+                "error": "Invalid credentials",
+                "details": str(error)
+            }, status=status.HTTP_400_BAD_REQUEST)
+ 
+        try:
+            authenticated_user = backend.do_auth(access_token, user=user)
+       
+        except HTTPError as error:
+            return Response({
+                "error":"invalid token",
+                "details": str(error)
+            }, status=status.HTTP_400_BAD_REQUEST)
+       
+        except AuthForbidden as error:
+            return Response({
+                "error":"invalid token",
+                "details": str(error)
+            }, status=status.HTTP_400_BAD_REQUEST)
+ 
+        if authenticated_user and authenticated_user.is_active:
+            #generate JWT token
+            login(request, authenticated_user)
+            data={
+                "token": jwt_encode_handler(
+                    jwt_payload_handler(user)
+                )}
+            #customize the response to your needs
+            response = {
+                "email": authenticated_user.email,
+                "username": authenticated_user.username,
+                "token": data.get('token')
+            }
+            return Response(status=status.HTTP_200_OK, data=response)
+
+
+
 
 # Register
 # Response: https://gist.github.com/mitchtabian/c13c41fa0f51b304d7638b7bac7cb694
@@ -33,6 +123,12 @@ def registration_view(request):
         username = request.data.get('username', '0')
         if validate_username(username) != None:
             data['error_message'] = 'That username is already in use.'
+            data['response'] = 'Error'
+            return Response(data)
+        password = request.data.get('password', '0')
+        val = validate_password(password) 
+        if val[0] == None:
+            data['error_message'] = val[1]
             data['response'] = 'Error'
             return Response(data)
 
@@ -79,6 +175,39 @@ def validate_username(username):
         return None
     if account != None:
         return username
+
+
+def validate_password(passwd): 
+      
+    SpecialSym =['$', '@', '#', '%'] 
+    val = {0:"not None", 1:"not any error"}
+      
+    if len(passwd) < 6: 
+        val[0] = None
+        val[1] = 'password is too short!'
+        return val
+    if len(passwd) > 20: 
+        val[0] = None
+        val[1] = 'Password is too long!!'
+        return val
+    if not any(char.isdigit() for char in passwd): 
+        val[0] = None
+        val[1] = 'your password must contain at least one digit.'
+        return val
+    if not any(char.isupper() for char in passwd): 
+        val[0] = None
+        val[1] = 'your password must contain at least one uppercase alphabet.'
+        return val
+    if not any(char.islower() for char in passwd): 
+        val[0] = None
+        val[1] = 'your password must contain at least one lowercase alphabet.'
+        return val
+          
+    if any(char in SpecialSym for char in passwd): 
+        val[0] = None 
+        val[1] = 'your passwrod shouldn\'t contain any of {@,#,%,$ } set'
+        return val 
+    return val
 
 
 # Account properties
@@ -138,17 +267,13 @@ class ObtainAuthTokenView(APIView):
         password = request.POST.get('password')
         account = authenticate(email=email, password=password)
         if account:
-            try:
-                token = Token.objects.get(user=account)
-            except Token.DoesNotExist:
-                token = Token.objects.create(user=account)
             context['response'] = 'Successfully authenticated.'
             context['pk'] = account.pk
             context['email'] = email.lower()
-            context['token'] = token.key
+            x = get_tokens_for_user(account)
+            context['refresh'] = x['refresh']
+            context['access'] = x['access']
         else:
-            context['hajit'] = email
-            context['hajit2'] = password
             context['response'] = 'Error'
             context['error_message'] = 'Invalid credentials'
 

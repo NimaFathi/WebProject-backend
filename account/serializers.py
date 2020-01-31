@@ -48,3 +48,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 	confirm_new_password 		= serializers.CharField(required=True)
 
 
+class SocialSerializer(serializers.Serializer):
+    
+    provider = serializers.CharField(max_length=255, required=True)
+    access_token = serializers.CharField(max_length=4096, required=True, trim_whitespace=True)
