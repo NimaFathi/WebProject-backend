@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.views import APIView
 from rest_framework.generics import UpdateAPIView
 from django.contrib.auth import authenticate
@@ -11,6 +12,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from .serializers import RegistrationSerializer, AccountPropertiesSerializer, ChangePasswordSerializer
 from account.models import Account
 from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken , AccessToken
 
 # Register
 # Response: https://gist.github.com/mitchtabian/c13c41fa0f51b304d7638b7bac7cb694
@@ -38,15 +40,27 @@ def registration_view(request):
 
         if serializer.is_valid():
             account = serializer.save()
+            account.save()
             data['response'] = 'successfully registered new user.'
             data['email'] = account.email
             data['username'] = account.username
             data['pk'] = account.pk
-            token = Token.objects.get(user=account).key
-            data['token'] = token
+            x = get_tokens_for_user(account)
+            data['refresh'] = x.get('refresh')
+            data['access'] = x.get('access')
+            return Response(data)
         else:
             data = serializer.errors
         return Response(data)
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 
 def validate_email(email):
     account = None

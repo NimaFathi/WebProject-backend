@@ -9,6 +9,11 @@ from account.views import(
 )
 from rest_framework.authtoken.views import obtain_auth_token
 
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+
+
+
 app_name = 'account'
 
 urlpatterns = [
@@ -16,7 +21,7 @@ urlpatterns = [
 	path('change_password/', ChangePasswordView.as_view(), name="change_password"),
 	path('properties', account_properties_view, name="properties"),
 	path('properties/update', update_account_view, name="update"),
- 	path('login', obtain_auth_token, name="login"), 
+    path('login/',TokenObtainPairView.as_view(), name="login"),
 	path('register/', registration_view, name="register"),
 
 ]

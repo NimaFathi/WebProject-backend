@@ -9,6 +9,8 @@ from django.urls import reverse
 
 from django_rest_passwordreset.signals import reset_password_token_created
 
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 
 urlpatterns = [
@@ -22,6 +24,8 @@ urlpatterns = [
     path('notifications/', include('notifications.urls')),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('search/', include('search.urls')),
+    path('api/token/',TokenObtainPairView.as_view()),
+    path('api/token/refresh/', TokenRefreshView.as_view())
 ]
 
 
