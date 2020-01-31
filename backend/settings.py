@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'channel',
     'account',
     'MainPage',
+    'notifications',
     'rest_framework.authtoken'
 ]
 

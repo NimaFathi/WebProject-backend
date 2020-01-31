@@ -55,7 +55,7 @@ def contributes(request):
     user_id = request.query_params.get('user_id', None)
     account1 = Account.objects.get(pk=user_id)
     created_posts = Card.objects.filter(author=account1)
-    commented_posts = Card.objects.filter(pk__in=Comment.objects.filter(author=account1).only('post'))
+    commented_posts = Card.objects.filter(pk__in=Comment.objects.filter(author=account1).values('post'))
     try:
         queryset = commented_posts.union(created_posts).order_by('date_Modified')
     except queryset.DoesNotExist:

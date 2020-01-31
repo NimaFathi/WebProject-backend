@@ -23,3 +23,4 @@ class Comment(models.Model):
     voteUp = models.ManyToManyField(Account,related_name='voteUp', blank=True)
     voteDown = models.ManyToManyField(Account, blank=True)
     time = models.DateField(auto_now_add=True, null=True)
+    is_seen = models.IntegerField(default=0)

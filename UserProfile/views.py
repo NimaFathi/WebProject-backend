@@ -17,6 +17,7 @@ class change_profile(APIView):
         serializer = ProfileSerializer(account1, many = True)
         return Response(serializer.data)
 
+
 class user_profile(generics.ListAPIView):
     serializer_class = ProfileSerializer
 
