@@ -27,9 +27,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view()),
     path('api/auth/oauth/', include('rest_framework_social_oauth2.urls')),
     path('google/', GoogleView.as_view())
-  	
 ]
-
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
