@@ -25,6 +25,10 @@ from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
 
 from django.contrib.auth import logout
 
+import requests
+from account.models import Account
+import json
+
 class Logout(APIView):
     def get(self, request, format=None):
         # simply delete the token to force a login
@@ -35,74 +39,36 @@ class Logout(APIView):
 
 
 
-class SocialLoginView(generics.GenericAPIView):
-    """Log in using google"""
-    serializer_class = SocialSerializer
-    permission_classes = [permissions.AllowAny]
- 
+class GoogleView(APIView):
+    permission_classes=()
+    authentication_classes=()
     def post(self, request):
-        """Authenticate user through the provider and access_token"""
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        provider = serializer.data.get('provider', None)
-        strategy = load_strategy(request)
- 
-        try:
-            backend = load_backend(strategy=strategy, name=provider,
-            redirect_uri='localhost:8000/mainpage')
- 
-        except MissingBackend:
-            return Response({'error': 'Please provide a valid provider'},
-            status=status.HTTP_400_BAD_REQUEST)
-        try:
-            if isinstance(backend, BaseOAuth2):
-                access_token = serializer.data.get('access_token')
-            user = backend.do_auth(access_token)
-        except HTTPError as error:
-            return Response({
-                "error": {
-                    "access_token": "Invalid token",
-                    "details": str(error)
-                }
-            }, status=status.HTTP_400_BAD_REQUEST)
-        except AuthTokenError as error:
-            return Response({
-                "error": "Invalid credentials",
-                "details": str(error)
-            }, status=status.HTTP_400_BAD_REQUEST)
- 
-        try:
-            authenticated_user = backend.do_auth(access_token, user=user)
-       
-        except HTTPError as error:
-            return Response({
-                "error":"invalid token",
-                "details": str(error)
-            }, status=status.HTTP_400_BAD_REQUEST)
-       
-        except AuthForbidden as error:
-            return Response({
-                "error":"invalid token",
-                "details": str(error)
-            }, status=status.HTTP_400_BAD_REQUEST)
- 
-        if authenticated_user and authenticated_user.is_active:
-            #generate JWT token
-            login(request, authenticated_user)
-            data={
-                "token": jwt_encode_handler(
-                    jwt_payload_handler(user)
-                )}
-            #customize the response to your needs
-            response = {
-                "email": authenticated_user.email,
-                "username": authenticated_user.username,
-                "token": data.get('token')
-            }
-            return Response(status=status.HTTP_200_OK, data=response)
+        payload = {'access_token': request.data.get("token")}  # validate the token
+        hashed = request.data.get("token")
+        r = requests.get('https://www.googleapis.com/oauth2/v2/userinfo', params=payload)
+        data = json.loads(r.text)
 
+        if 'error' in data:
+            content = {'message': 'wrong google token / this google token is already expired.'}
+            return Response(content)
 
+        # create user if not exist
+        try:
+            user = Account.objects.get(email=data['email'])
+        except Account.DoesNotExist:
+            user = Account()
+            user.username = data['email']
+            # provider random default password
+            user.password = data['email'] + hashed[0:4]
+            user.email = data['email']
+            user.save()
 
+        token = RefreshToken.for_user(user)  # generate token without username & password
+        response = {}
+        response['username'] = user.username
+        response['access_token'] = str(token.access_token)
+        response['refresh_token'] = str(token)
+        return Response(response)
 
 # Register
 # Response: https://gist.github.com/mitchtabian/c13c41fa0f51b304d7638b7bac7cb694
@@ -186,7 +152,7 @@ def validate_password(passwd):
         val[0] = None
         val[1] = 'password is too short!'
         return val
-    if len(passwd) > 20: 
+    if len(passwd) > 40: 
         val[0] = None
         val[1] = 'Password is too long!!'
         return val

@@ -10,7 +10,7 @@ from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
 
 from rest_framework_simplejwt.views import TokenRefreshView
-
+from account.views import GoogleView
 
 
 urlpatterns = [
@@ -25,7 +25,8 @@ urlpatterns = [
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('search/', include('search.urls')),
     path('api/token/refresh/', TokenRefreshView.as_view()),
-    path('', include('social_django.urls', namespace='social')),
+    path('api/auth/oauth/', include('rest_framework_social_oauth2.urls')),
+    path('google/', GoogleView.as_view())
   	
 ]
 
