@@ -239,12 +239,8 @@ class ObtainAuthTokenView(APIView):
             context['refresh'] = x['refresh']
             context['access'] = x['access']
         else:
-            context['response'] = 'Error'
-            context['error_message'] = 'Invalid credentials'
-
+            return Response(status=status.HTTP_403_FORBIDDEN)
         return Response(context)
-
-
 
 
 @api_view(['GET', ])
