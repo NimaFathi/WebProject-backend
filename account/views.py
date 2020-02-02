@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from .serializers import RegistrationSerializer, AccountPropertiesSerializer, ChangePasswordSerializer, SocialSerializer
 from account.models import Account
-from rest_framework_simplejwt.tokens import RefreshToken , AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 
 from django.http import JsonResponse
@@ -78,42 +78,41 @@ class GoogleView(APIView):
 @authentication_classes([])
 def registration_view(request):
 
-    if request.method == 'POST':
-        data = {}
-        email = request.data.get('email', '0').lower()
-        if validate_email(email) != None:
-            data['error_message'] = 'That email is already in use.'
-            data['response'] = 'Error'
-            return Response(data)
-
-        username = request.data.get('username', '0')
-        if validate_username(username) != None:
-            data['error_message'] = 'That username is already in use.'
-            data['response'] = 'Error'
-            return Response(data)
-        password = request.data.get('password', '0')
-        val = validate_password(password) 
-        if val[0] == None:
-            data['error_message'] = val[1]
-            data['response'] = 'Error'
-            return Response(data)
-
-        serializer = RegistrationSerializer(data=request.data)
-
-        if serializer.is_valid():
-            account = serializer.save()
-            account.save()
-            data['response'] = 'successfully registered new user.'
-            data['email'] = account.email
-            data['username'] = account.username
-            data['pk'] = account.pk
-            x = get_tokens_for_user(account)
-            data['refresh'] = x.get('refresh')
-            data['access'] = x.get('access')
-            return Response(data)
-        else:
-            data = serializer.errors
+    data = {}
+    email = request.data.get('email', '0').lower()
+    if validate_email(email) != None:
+        data['error_message'] = 'That email is already in use.'
+        data['response'] = 'Error'
         return Response(data)
+
+    username = request.data.get('username', '0')
+    if validate_username(username) != None:
+        data['error_message'] = 'That username is already in use.'
+        data['response'] = 'Error'
+        return Response(data)
+    password = request.data.get('password', '0')
+    val = validate_password(password)
+    if val[0] == None:
+        data['error_message'] = val[1]
+        data['response'] = 'Error'
+        return Response(data)
+
+    serializer = RegistrationSerializer(data=request.data)
+
+    if serializer.is_valid():
+        account = serializer.save()
+        account.save()
+        data['response'] = 'successfully registered new user.'
+        data['email'] = account.email
+        data['username'] = account.username
+        data['pk'] = account.pk
+        x = get_tokens_for_user(account)
+        data['refresh'] = x.get('refresh')
+        data['access'] = x.get('access')
+        return Response(data)
+    else:
+        data = serializer.errors
+    return Response(data)
 
 
 def get_tokens_for_user(user):

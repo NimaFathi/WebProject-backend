@@ -24,7 +24,6 @@ SECRET_KEY = 'stp2lqw9fdnx_%thr=p+e+vtvvy5((wy2r2shlj91c=_^1-ckc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
 ALLOWED_HOSTS = [
     '*'
 ]
@@ -51,19 +50,22 @@ INSTALLED_APPS = [
     'social_django',
     'oauth2_provider',
     'rest_framework_social_oauth2',
-]
+    ]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        #'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
+        #'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         #'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+        'account.permissions.DisableOptionsPermission',
+
+    ],
+
 
 }
 

@@ -11,3 +11,4 @@ class Channel(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=50)
     rules = models.CharField(max_length=50)
+

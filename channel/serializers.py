@@ -11,6 +11,7 @@ class ChannelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
 class search_channel_serializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
