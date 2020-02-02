@@ -208,7 +208,12 @@ def create_card_view(request):
                 image_url = image_url[:image_url.rfind("?")]
             image_url = image_url.encode('utf-8').strip()
             data['pictureContent'] = image_url
-            #data['creatorPicture'] = card.author.avatar
+            print(str(card.author.avatar))
+            print(image_url)
+            baseStrig="http://127.0.0.1:8000/post/card/create/"
+            x = baseStrig + str(card.author.avatar)
+            print(x)
+            data['creatorPicture'] = x
             return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
