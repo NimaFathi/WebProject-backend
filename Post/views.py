@@ -31,7 +31,7 @@ def detail_card_view(request, id):
 
     if request.method == 'GET':
         serializer = CardSerializer(card)
-        return Response(serializer.data)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', ])
@@ -44,7 +44,7 @@ def detail_comment_view(request, id):
 
     if request.method == 'GET':
         serializer = CommentSerializer(comment)
-        return Response(serializer.data)
+        return Response(data=serializer.data,status=status.HTTP_200_OK)
 
 
 @api_view(['PUT', ])
@@ -57,7 +57,7 @@ def update_card_view(request, id):
 
     user = request.user
     if card.author != user:
-        return Response({'response': "you don't have permission to edit."})
+        return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'PUT':
         serializer = CardSerializer(card, data=request.data, partial=True)
@@ -66,10 +66,10 @@ def update_card_view(request, id):
             serializer.save()
             data['response'] = UPDATE_SUCCESS
             data['pk'] = card.pk
-            if card.channel != null:
+            if card.channel != None:
                 data['adminId'] = card.channel.admin.pk
             else:
-                data['adminId'] = null
+                data['adminId'] = None
             data['userId'] = card.author.pk
             data['textcontent'] = card.content
             data['voteDown'] = card.voteDown
@@ -79,8 +79,9 @@ def update_card_view(request, id):
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
             data['pictureContent'] = image_url
-            return Response(data=data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            data['profilePicture'] = str(card.author.avatar)
+            return Response(data=data, status=status.HTTP_200_OK)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT', ])
@@ -112,8 +113,9 @@ def update_comment_view(request, id):
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
             data['picture'] = image_url
+            data['profilePicture'] = str(comment.author.avatar)
             data['time'] = comment.time
-            return Response(data=data)
+            return Response(data=data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -130,9 +132,9 @@ def is_author_of_card(request, id):
     user = request.user
     if card.author != user:
         data['response'] = "you don't have permission to edit"
-        return Response(data=data)
+        return Response(data=data, status=status.HTTP_403_FORBIDDEN)
     data['response'] = "You have permission to edit."
-    return Response(data=data)
+    return Response(data=data,status=status.HTTP_200_OK)
 
 
 @api_view(['GET', ])
@@ -147,9 +149,9 @@ def is_author_of_comment(request, id):
     user = request.user
     if comment.author != user:
         data['response'] = "you don't have permission to edit"
-        return Response(data=data)
+        return Response(data=data,status=status.HTTP_403_FORBIDDEN)
     data['response'] = "You have permission to edit."
-    return Response(data=data)
+    return Response(data=data,status=status.HTTP_200_OK)
 
 
 @api_view(['DELETE', ])
@@ -158,14 +160,14 @@ def delete_card_view(request, id):
     try:
         card = Card.objects.get(pk=id)
     except Card.DoesNotExist:
-        return Response({'response': "You don't have permission to delete."})
+        return Response({'response': "You don't have permission to delete."},status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "DELETE":
         operation = card.delete()
         data = {}
         if operation:
             data['response'] = DELETE_SUCCESS
-            return Response(data=data)
+            return Response(data=data,status=status.HTTP_200_OK)
 
 
 @api_view(['DELETE', ])
@@ -174,14 +176,14 @@ def delete_comment_view(request, id):
     try:
         comment = Comment.objects.get(pk=id)
     except Comment.DoesNotExist:
-        return Response({'response': "You don't have permission to delete."})
+        return Response(data={'response': "You don't have permission to delete."},status=status.HTTP_404_NOT_FOUND)
 
     if request.methode == "DELETE":
         operation = comment.delete()
         data = {}
         if operation:
             data['response'] = DELETE_SUCCESS
-            return Response(data=data)
+            return Response(data=data,status=status.HTTP_200_OK)
 
 
 @api_view(['POST', ])
@@ -208,8 +210,8 @@ def create_card_view(request):
                 image_url = image_url[:image_url.rfind("?")]
             image_url = image_url.encode('utf-8').strip()
             data['pictureContent'] = image_url
-            data['creatorPicture'] = card.author.avatar
-            return Response(data=data)
+            data['profilePicture'] = str(card.author.avatar)
+            return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -236,6 +238,7 @@ def create_comment_view(request):
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
             data['picture'] = image_url
+            data['profilePicture'] = str(comment.author.avatar)
             data['time'] = comment.time.encode
-            return Response(data=data)
+            return Response(data=data,status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

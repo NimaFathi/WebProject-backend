@@ -50,7 +50,7 @@ class GoogleView(APIView):
 
         if 'error' in data:
             content = {'message': 'wrong google token / this google token is already expired.'}
-            return Response(content)
+            return Response(data=content, status=status.HTTP_403_FORBIDDEN)
 
         # create user if not exist
         try:
@@ -68,11 +68,8 @@ class GoogleView(APIView):
         response['username'] = user.username
         response['access_token'] = str(token.access_token)
         response['refresh_token'] = str(token)
-        return Response(response)
+        return Response(response, status=status.HTTP_200_OK)
 
-# Register
-# Response: https://gist.github.com/mitchtabian/c13c41fa0f51b304d7638b7bac7cb694
-# Url: https://<your-domain>/api/account/register
 @api_view(['POST', ])
 @permission_classes([])
 @authentication_classes([])
@@ -83,19 +80,19 @@ def registration_view(request):
     if validate_email(email) != None:
         data['error_message'] = 'That email is already in use.'
         data['response'] = 'Error'
-        return Response(data)
+        return Response(data=data, status=status.HTTP_403_FORBIDDEN)
 
     username = request.data.get('username', '0')
     if validate_username(username) != None:
         data['error_message'] = 'That username is already in use.'
         data['response'] = 'Error'
-        return Response(data)
+        return Response(data=data,status=status.HTTP_403_FORBIDDEN)
     password = request.data.get('password', '0')
     val = validate_password(password)
     if val[0] == None:
         data['error_message'] = val[1]
         data['response'] = 'Error'
-        return Response(data)
+        return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     serializer = RegistrationSerializer(data=request.data)
 
@@ -109,10 +106,11 @@ def registration_view(request):
         x = get_tokens_for_user(account)
         data['refresh'] = x.get('refresh')
         data['access'] = x.get('access')
-        return Response(data)
+        return Response(data=data, status=status.HTTP_200_OK)
     else:
         data = serializer.errors
-    return Response(data)
+        return Response(data=data, status=status.HTTP_403_FORBIDDEN)
+    return Response(data=data,status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
 def get_tokens_for_user(user):
@@ -175,10 +173,6 @@ def validate_password(passwd):
     return val
 
 
-# Account properties
-# Response: https://gist.github.com/mitchtabian/4adaaaabc767df73c5001a44b4828ca5
-# Url: https://<your-domain>/api/account/
-# Headers: Authorization: Token <token>
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated, ))
 def account_properties_view(request):
@@ -190,13 +184,9 @@ def account_properties_view(request):
 
     if request.method == 'GET':
         serializer = AccountPropertiesSerializer(account)
-        return Response(serializer.data)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-# Account update properties
-# Response: https://gist.github.com/mitchtabian/72bb4c4811199b1d303eb2d71ec932b2
-# Url: https://<your-domain>/api/account/properties/update
-# Headers: Authorization: Token <token>
 @api_view(['PUT',])
 @permission_classes((IsAuthenticated, ))
 def update_account_view(request):
@@ -212,14 +202,11 @@ def update_account_view(request):
         if serializer.is_valid():
             serializer.save()
             data['response'] = 'Account update success'
-            return Response(data=data)
+            return Response(data=data,status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
-# LOGIN
-# Response: https://gist.github.com/mitchtabian/8e1bde81b3be342853ddfcc45ec0df8a
-# URL: http://127.0.0.1:8000/api/account/login
 class ObtainAuthTokenView(APIView):
 
     authentication_classes = []
@@ -235,12 +222,18 @@ class ObtainAuthTokenView(APIView):
             context['response'] = 'Successfully authenticated.'
             context['pk'] = account.pk
             context['email'] = email.lower()
+            context['image'] = str(account.avatar)
+            print(account.avatar)
             x = get_tokens_for_user(account)
             context['refresh'] = x['refresh']
             context['access'] = x['access']
+            return Response(data=context, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        return Response(context)
+
+        return Response(context,status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
 
 
 @api_view(['GET', ])
@@ -256,7 +249,8 @@ def does_account_exist_view(request):
             data['response'] = email
         except Account.DoesNotExist:
             data['response'] = "Account does not exist"
-        return Response(data)
+            return Response(data=data, status=status.HTTP_403_FORBIDDEN)
+        return Response(data,status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
 
