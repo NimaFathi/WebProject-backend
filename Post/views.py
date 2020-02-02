@@ -79,6 +79,7 @@ def update_card_view(request, id):
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
             data['pictureContent'] = image_url
+            data['profilePicture'] = str(card.author.avatar)
             return Response(data=data, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -112,6 +113,7 @@ def update_comment_view(request, id):
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
             data['picture'] = image_url
+            data['profilePicture'] = str(comment.author.avatar)
             data['time'] = comment.time
             return Response(data=data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -208,12 +210,7 @@ def create_card_view(request):
                 image_url = image_url[:image_url.rfind("?")]
             image_url = image_url.encode('utf-8').strip()
             data['pictureContent'] = image_url
-            print(str(card.author.avatar))
-            print(image_url)
-            baseStrig="http://127.0.0.1:8000/post/card/create/"
-            x = baseStrig + str(card.author.avatar)
-            print(x)
-            data['creatorPicture'] = x
+            data['profilePicture'] = str(card.author.avatar)
             return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -241,6 +238,7 @@ def create_comment_view(request):
             if "?" in image_url:
                 image_url = image_url[:image_url.rfind("?")]
             data['picture'] = image_url
+            data['profilePicture'] = str(comment.author.avatar)
             data['time'] = comment.time.encode
             return Response(data=data,status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

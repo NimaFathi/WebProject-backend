@@ -222,6 +222,8 @@ class ObtainAuthTokenView(APIView):
             context['response'] = 'Successfully authenticated.'
             context['pk'] = account.pk
             context['email'] = email.lower()
+            context['image'] = str(account.avatar)
+            print(account.avatar)
             x = get_tokens_for_user(account)
             context['refresh'] = x['refresh']
             context['access'] = x['access']
