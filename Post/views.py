@@ -178,7 +178,7 @@ def delete_comment_view(request, id):
     except Comment.DoesNotExist:
         return Response(data={'response': "You don't have permission to delete."},status=status.HTTP_404_NOT_FOUND)
 
-    if request.methode == "DELETE":
+    if request.method == "DELETE":
         operation = comment.delete()
         data = {}
         if operation:
@@ -220,7 +220,7 @@ def create_card_view(request):
 def create_comment_view(request):
     if request.method == 'POST':
         data = request.data
-        data['author'] = request.user.pk
+        #data['author'] = request.user.pk
         serializer = CommentSerializer(data=data)
 
         data = {}
@@ -234,11 +234,7 @@ def create_comment_view(request):
             data['content'] = comment.content
             data['voteDown'] = comment.voteDown.all()
             data['voteUp'] = comment.voteUp.all()
-            image_url = str(request.build_absolute_uri(comment.author.avatar.url))
-            if "?" in image_url:
-                image_url = image_url[:image_url.rfind("?")]
-            data['picture'] = image_url
             data['profilePicture'] = str(comment.author.avatar)
-            data['time'] = comment.time.encode
+            data['time'] = comment.time
             return Response(data=data,status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

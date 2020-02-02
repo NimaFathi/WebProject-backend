@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Comment, Card
-
+from account.serializers import AccountPropertiesSerializer
+from django.http import JsonResponse
 
 class search_card_serializer(serializers.ModelSerializer):
     class Meta:
@@ -25,7 +26,12 @@ class CardSerializer(serializers.ModelSerializer):
         return creatorPicture
 
     def get_adminId_from_channel(self, card):
-        return 1
+        if card.channel is not None:
+            queryset     = card.channel.admin.pk
+            print(queryset)
+            return queryset
+        else:
+            return None
 
     def get_authorId_from_author(self, card):
             return card.author.pk
@@ -37,7 +43,7 @@ class CardSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField("get_username_from_author")
     userId = serializers.SerializerMethodField("get_userId_from_author")
-    profilePicture = serializers.SerializerMethodField("get_picture_from_author")
+    profilePicture = serializers.SerializerMethodField("get_creatorPicture_from_author")
 
 
     class Meta:
@@ -52,11 +58,6 @@ class CommentSerializer(serializers.ModelSerializer):
         userId = comment.author.pk
         return userId
 
-    def get_picture_from_author(self, comment):
-        picture = comment.author.avatar
-        return picture
-
-    def get_creatorPicture_from_author(self, card):
-        baseStrig="http://127.0.0.1:8000/"
-        creatorPicture = baseStrig + str(card.author.avatar)
+    def get_creatorPicture_from_author(self, comment):
+        creatorPicture = str(comment.author.avatar)
         return creatorPicture
