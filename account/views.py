@@ -80,13 +80,13 @@ def registration_view(request):
     if validate_email(email) != None:
         data['error_message'] = 'That email is already in use.'
         data['response'] = 'Error'
-        return Response(data)
+        return Response(data=data, status=status.HTTP_403_FORBIDDEN)
 
     username = request.data.get('username', '0')
     if validate_username(username) != None:
         data['error_message'] = 'That username is already in use.'
         data['response'] = 'Error'
-        return Response(data)
+        return Response(data=data,status=status.HTTP_403_FORBIDDEN)
     password = request.data.get('password', '0')
     val = validate_password(password)
     if val[0] == None:
@@ -106,11 +106,11 @@ def registration_view(request):
         x = get_tokens_for_user(account)
         data['refresh'] = x.get('refresh')
         data['access'] = x.get('access')
-        return Response(data=data, status=status.HTTP_403_FORBIDDEN)
+        return Response(data=data, status=status.HTTP_200_OK)
     else:
         data = serializer.errors
         return Response(data=data, status=status.HTTP_403_FORBIDDEN)
-    return Response(data=data)
+    return Response(data=data,status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
 def get_tokens_for_user(user):
@@ -184,7 +184,7 @@ def account_properties_view(request):
 
     if request.method == 'GET':
         serializer = AccountPropertiesSerializer(account)
-        return Response(serializer.data)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['PUT',])
@@ -202,7 +202,7 @@ def update_account_view(request):
         if serializer.is_valid():
             serializer.save()
             data['response'] = 'Account update success'
-            return Response(data=data)
+            return Response(data=data,status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -225,10 +225,11 @@ class ObtainAuthTokenView(APIView):
             x = get_tokens_for_user(account)
             context['refresh'] = x['refresh']
             context['access'] = x['access']
+            return Response
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        return Response(context)
+        return Response(context,status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
 
@@ -247,7 +248,7 @@ def does_account_exist_view(request):
         except Account.DoesNotExist:
             data['response'] = "Account does not exist"
             return Response(data=data, status=status.HTTP_403_FORBIDDEN)
-        return Response(data)
+        return Response(data,status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
 
