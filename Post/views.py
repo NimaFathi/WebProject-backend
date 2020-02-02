@@ -66,10 +66,10 @@ def update_card_view(request, id):
             serializer.save()
             data['response'] = UPDATE_SUCCESS
             data['pk'] = card.pk
-            if card.channel != null:
+            if card.channel != None:
                 data['adminId'] = card.channel.admin.pk
             else:
-                data['adminId'] = null
+                data['adminId'] = None
             data['userId'] = card.author.pk
             data['textcontent'] = card.content
             data['voteDown'] = card.voteDown
