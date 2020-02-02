@@ -68,7 +68,7 @@ class GoogleView(APIView):
         response['username'] = user.username
         response['access_token'] = str(token.access_token)
         response['refresh_token'] = str(token)
-        return Response(data=response, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
 
 @api_view(['POST', ])
 @permission_classes([])
@@ -225,7 +225,7 @@ class ObtainAuthTokenView(APIView):
             x = get_tokens_for_user(account)
             context['refresh'] = x['refresh']
             context['access'] = x['access']
-            return Response
+            return Response(data=context, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
 

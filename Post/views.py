@@ -208,8 +208,8 @@ def create_card_view(request):
                 image_url = image_url[:image_url.rfind("?")]
             image_url = image_url.encode('utf-8').strip()
             data['pictureContent'] = image_url
-            data['creatorPicture'] = card.author.avatar
-            return Response(data=data,status=status.HTTP_200_OK)
+            #data['creatorPicture'] = card.author.avatar
+            return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
