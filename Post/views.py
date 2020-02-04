@@ -76,7 +76,6 @@ def update_comment_view(request, id):
         comment = Comment.objects.get(id=id)
     except Comment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     # user = request.user
     # if comment.author != user:
     #     return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
@@ -171,6 +170,7 @@ def create_card_view(request):
             ser = CardSerializer(card)
             #ser.data['response'] = CREATE_SUCCESS
             return Response(ser.data)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
