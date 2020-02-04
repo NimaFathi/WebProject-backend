@@ -7,7 +7,9 @@ from account.views import(
 	does_account_exist_view,
 	ChangePasswordView,
 	GoogleView,
-	Logout
+	Logout,
+	remove_follower,
+	add_follower
 
 )
 from rest_framework.authtoken.views import obtain_auth_token
@@ -27,5 +29,7 @@ urlpatterns = [
     path('login/',ObtainAuthTokenView.as_view(), name="login"),
 	path('register/', registration_view, name="register"),
 	path('logout/', Logout.as_view(),name='logout'),
+	path('addfollower/', remove_follower),
+	path('removefollower/', remove_follower)
 
 ]

@@ -9,7 +9,7 @@ from account.models import Account
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated, ])
+# @permission_classes([IsAuthenticated, ])
 def hottest(request):
     try:
         queryset = Card.objects.annotate(q_count=Count('voteUp')).order_by('-q_count')[:10]
@@ -21,7 +21,7 @@ def hottest(request):
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated, ])
+# @permission_classes([IsAuthenticated, ])
 def newest(request):
     try:
         queryset = Card.objects.all().order_by('date_Modified')[:10]
@@ -33,7 +33,7 @@ def newest(request):
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated, ])
+# @permission_classes([IsAuthenticated, ])
 def following(request):
     user_id = request.query_params.get('user_id', None)
     account1 = Account.objects.get(pk=user_id)
@@ -50,7 +50,7 @@ def following(request):
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated, ])
+# @permission_classes([IsAuthenticated, ])
 def contributes(request):
     user_id = request.query_params.get('user_id', None)
     account1 = Account.objects.get(pk=user_id)

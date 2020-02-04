@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
+from notifications.models import follow_notification
 from rest_framework.views import APIView
 from rest_framework.generics import UpdateAPIView
 from django.contrib.auth import authenticate
@@ -286,3 +286,26 @@ class ChangePasswordView(UpdateAPIView):
             return Response({"response":"successfully changed password"}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST', ])
+def add_follower(request):
+    follower_id = request.data['follower_id']
+    following_id = request.data['following_id']
+    follower = Account.objects.get(pk=follower_id)
+    following = Account.objects.get(pk=following_id)
+    follower.followings.add(following)
+    following.followers.add(follower)
+    follow_notification.objects.create(follower=follower, following=following)
+
+
+@api_view(['POST', ])
+def remove_follower(request):
+    follower_id = request.data['follower_id']
+    following_id = request.data['following_id']
+    follower = Account.objects.get(pk=follower_id)
+    following = Account.objects.get(pk=following_id)
+    follower.followings.remove(following)
+    following.followers.remove(follower)
+    follow_notification.objects.filter(follower=follower, following=following).delete()
+

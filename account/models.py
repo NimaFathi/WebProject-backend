@@ -52,7 +52,8 @@ class Account(AbstractBaseUser):
     bio = models.CharField(max_length=100, default="new to mediap")
     occupy = models.CharField(max_length=100, default="student")
     avatar = models.ImageField(upload_to='images', default='images/default_avatar.png')
-    following = models.ManyToManyField('self', blank=True)
+    followings = models.ManyToManyField('self', blank=True)
+    followers = models.ManyToManyField('self', blank=True)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

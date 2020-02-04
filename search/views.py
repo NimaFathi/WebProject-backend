@@ -8,8 +8,9 @@ from account.serializers import account_search_serializer
 from channel.models import Channel
 from channel.serializers import search_channel_serializer
 
+
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def search_posts(request):
     query = request.query_params.get('q', None)
     posts = Card.objects.filter(title=query)
@@ -18,7 +19,7 @@ def search_posts(request):
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def search_users(request):
     query = request.query_params.get('q', None)
     accounts = Account.objects.filter(username=query)
@@ -27,12 +28,27 @@ def search_users(request):
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def search_channels(request):
     query = request.query_params.get('q', None)
     channels = Channel.objects.filter(name=query)
     serializer = search_channel_serializer(channels, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET', ])
+def search_all(request):
+    query = request.query_params.get('q', None)
+    channels = Channel.objects.filter(name=query)
+    accounts = Account.objects.filter(username=query)
+    posts = Card.objects.filter(title=query)
+    channels_serializer = search_channel_serializer(channels, many=True)
+    accounts_serializer = account_search_serializer(accounts, many=True)
+    posts_serializer = search_card_serializer(posts, many=True)
+    return Response(data=[channels_serializer.data, accounts_serializer.data, posts_serializer.data])
+
+
+
 
 
 

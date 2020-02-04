@@ -18,7 +18,7 @@ class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
         fields = (
-        'pk', 'textContent', 'adminId', 'author','authorId', 'title', 'creatorName' , 'profilePicture',
+        'pk', 'textContent', 'adminId', 'author', 'authorId', 'title', 'creatorName', 'profilePicture',
         'comment_set', 'voteUp', 'voteDown', 'pictureContent')
 
     def get_creatorPicture_from_author(self, card):
@@ -32,6 +32,7 @@ class CardSerializer(serializers.ModelSerializer):
             return queryset
         else:
             return None
+
 
     def get_authorId_from_author(self, card):
             return card.author.pk
@@ -48,7 +49,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post','author' ,'parentId', 'userId', 'username','content','profilePicture', 'voteUp', 'voteDown', 'time',)
+        fields = ('pk', 'post', 'author', 'parentId', 'userId', 'username', 'content', 'profilePicture', 'voteUp', 'voteDown', 'time',)
 
     def get_username_from_author(self, comment):
         username = comment.author.username
