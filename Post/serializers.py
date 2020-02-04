@@ -14,13 +14,13 @@ class CardSerializer(serializers.ModelSerializer):
     authorId = serializers.SerializerMethodField("get_authorId_from_author")
     creatorName = serializers.SerializerMethodField("get_creatorName_from_author")
     profilePicture = serializers.SerializerMethodField("get_creatorPicture_from_author")
-    pictureContent = VersatileImageFieldSerializer(sizes='pic')
+    #pictureContent = VersatileImageFieldSerializer(sizes='pic')
 
     class Meta:
         model = Card
         fields = (
         'pk', 'textContent', 'adminId', 'author', 'authorId', 'title', 'creatorName', 'profilePicture',
-        'comment_set', 'voteUp', 'voteDown', 'pictureContent')
+        'comment_set', 'voteUp', 'voteDown', 'pictureContent', 'channel')
 
     def get_creatorPicture_from_author(self, card):
         creatorPicture = str(card.author.avatar)
