@@ -7,7 +7,7 @@ class Card(models.Model):
     author = models.ForeignKey(Account , null=False , on_delete=models.CASCADE, related_name='card_author')
     channel = models.ForeignKey(Channel , blank=True , null=True, on_delete=models.CASCADE, related_name='for_channel')
     title = models.CharField(max_length=100)
-    pictureContent = models.ImageField('pictureContent', upload_to='media' , default='media/default_avatar.png' )
+    pictureContent = models.ImageField('pictureContent', upload_to='' , default='media/default_avatar.png' )
     voteUp = models.ManyToManyField(Account , blank=True)
     voteDown = models.ManyToManyField(Account, related_name='voteDown', blank=True)
     date_Modified = models.DateTimeField(auto_now_add=True)
@@ -16,7 +16,7 @@ class Card(models.Model):
 
 class Image(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images', default='images/default_avatar.ong') 
+    image = models.ImageField(upload_to='', default='images/default_avatar.ong') 
 
 class Comment(models.Model):
     post = models.ForeignKey(Card, on_delete=models.CASCADE)

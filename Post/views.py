@@ -171,7 +171,6 @@ def create_card_view(request):
             ser = CardSerializer(card)
             #ser.data['response'] = CREATE_SUCCESS
             data = ser.data
-            data['url'] = card.pictureContent.url
             return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
