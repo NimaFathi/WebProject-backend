@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
-
+from versatileimagefield.fields import VersatileImageField
 
 
 from django.utils.html import mark_safe
@@ -51,7 +51,7 @@ class Account(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     bio = models.CharField(max_length=100, default="new to mediap")
     occupy = models.CharField(max_length=100, default="student")
-    avatar = models.ImageField(upload_to='images', default='images/default_avatar.png')
+    avatar = VersatileImageField('avatar',upload_to='images', default='images/default_avatar.png')
     following = models.ManyToManyField('self', blank=True)
     
     USERNAME_FIELD = 'email'

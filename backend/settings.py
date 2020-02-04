@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import datetime
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'social_django',
     'oauth2_provider',
     'rest_framework_social_oauth2',
+    'versatileimagefield',
     ]
 
 REST_FRAMEWORK = {
@@ -151,6 +153,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+    'pic': [
+        ('full_size', 'url'),
+        
+    ]
+}
 
 
 
@@ -193,14 +201,14 @@ LOGOUT_REDIRECT_URL = 'localhost:8000/mainpage'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 
-JWT_AUTH = {
-    # how long the original token is valid for
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
+# JWT_AUTH = {
+#     # how long the original token is valid for
+#     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
 
-    # allow refreshing of tokens
-    'JWT_ALLOW_REFRESH': True,
+#     # allow refreshing of tokens
+#     'JWT_ALLOW_REFRESH': True,
 
-    # this is the maximum time AFTER the token was issued that
-    # it can be refreshed.  exprired tokens can't be refreshed.
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
-}
+#     # this is the maximum time AFTER the token was issued that
+#     # it can be refreshed.  exprired tokens can't be refreshed.
+#     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+# }

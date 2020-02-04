@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Comment, Card
 from account.serializers import AccountPropertiesSerializer
 from django.http import JsonResponse
-
+from versatileimagefield.serializers import VersatileImageFieldSerializer
 class search_card_serializer(serializers.ModelSerializer):
     class Meta:
         model = Card
@@ -14,6 +14,7 @@ class CardSerializer(serializers.ModelSerializer):
     authorId = serializers.SerializerMethodField("get_authorId_from_author")
     creatorName = serializers.SerializerMethodField("get_creatorName_from_author")
     profilePicture = serializers.SerializerMethodField("get_creatorPicture_from_author")
+    pictureContent = VersatileImageFieldSerializer(sizes='pic')
 
     class Meta:
         model = Card
