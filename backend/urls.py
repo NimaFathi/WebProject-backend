@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import url 
+from django.conf.urls import url, include
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver
 from django.template.loader import render_to_string
@@ -11,7 +11,9 @@ from django_rest_passwordreset.signals import reset_password_token_created
 
 from rest_framework_simplejwt.views import TokenRefreshView
 from account.views import GoogleView
-
+from . import settings
+from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 
 urlpatterns = [
     path('raeis/', admin.site.urls),
@@ -27,7 +29,11 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view()),
     path('api/auth/oauth/', include('rest_framework_social_oauth2.urls')),
     path('google/', GoogleView.as_view())
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# urlpatterns += staticfiles_urlpatterns()
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
