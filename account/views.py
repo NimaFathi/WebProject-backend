@@ -304,8 +304,7 @@ def add_follower(request):
     following_id = request.data['following_id']
     follower = Account.objects.get(pk=follower_id)
     following = Account.objects.get(pk=following_id)
-    following.followers.add(follower)
-    # follow_notification.objects.create(follower=follower, following=following)
+    follow_notification.objects.create(follower=follower, following=following)
     return Response(status=status.HTTP_200_OK)
 
 
@@ -315,8 +314,6 @@ def remove_follower(request):
     following_id = request.data['following_id']
     follower = Account.objects.get(pk=follower_id)
     following = Account.objects.get(pk=following_id)
-    follower.followings.remove(following)
-    following.followers.remove(follower)
     follow_notification.objects.filter(follower=follower, following=following).delete()
     return Response(status=status.HTTP_200_OK)
 

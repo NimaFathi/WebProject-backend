@@ -21,7 +21,7 @@ class Card(models.Model):
 
 class Image(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images', default='images/default_avatar.ong') 
+    image = models.ImageField(upload_to='', default='images/default_avatar.ong') 
 
 
 class Comment(models.Model):

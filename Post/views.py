@@ -47,8 +47,35 @@ def detail_comment_view(request, id):
         return Response(data=serializer.data,status=status.HTTP_200_OK)
 
 
+# @api_view(['PUT', ])
+# #@permission_classes((IsAuthenticated,))
+# def update_card_view(request, id):
+#     try:
+#         card = Card.objects.get(id=id)
+#     except Card.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     # user = request.user
+#     # if card.author != user:
+#     #     print(card.author)
+#     #     print(user)
+#     #     print("fdsfsdfs")
+#     #     return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
+#
+#     if request.method == 'PUT':
+#         serializer = CardSerializer(card, data=request.data, partial=True)
+#         data = {}
+#         if serializer.is_valid():
+#             serializer.save()
+#             ser = CardSerializer(card)
+#             print("fdsdsfd")
+#             return Response(data=ser.data, status=status.HTTP_200_OK)
+#         print(serializer.errors)
+#         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+
 @api_view(['POST', ])
-#@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 def update_card_view(request, id):
     try:
         card = Card.objects.get(id=id)
@@ -57,22 +84,27 @@ def update_card_view(request, id):
 
     user = request.user
     # if card.author != user:
-    #     print(card.author)
-    #     print(user)
-    #     print("fdsfsdfs")
     #     return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'POST':
+        print(request.data)
         serializer = CardSerializer(card, data=request.data, partial=True)
         data = {}
         if serializer.is_valid():
             serializer.save()
-            ser = CardSerializer(card)
-            print("fdsdsfd")
-            return Response(data=ser.data, status=status.HTTP_200_OK)
-        print(serializer.errors)
+            data['response'] = UPDATE_SUCCESS
+            data['pk'] = card.pk
+            data['title'] = card.title
+            data['textContent'] = card.textContent
+            image_url = str(request.build_absolute_uri(card.pictureContent.url))
+            if "?" in image_url:
+                image_url = image_url[:image_url.rfind("?")]
+            x = image_url.split("localhost:8000/")
+            data['pictureContent'] = x[1]
+            data['username'] = card.author.username
+            return Response(data=data)
+#return Response(data=ser.data, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST', ])
 #@permission_classes((IsAuthenticated,))

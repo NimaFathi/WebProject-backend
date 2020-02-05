@@ -50,7 +50,6 @@ class Account(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     bio = models.CharField(max_length=100, default="new to mediap")
     occupy = models.CharField(max_length=100, default="student")
-    followers = models.ForeignKey('self', on_delete=models.CASCADE , null=True)
     avatar = models.ImageField('avatar',upload_to='media', default='media/default_avatar.png')
     
     USERNAME_FIELD = 'email'
