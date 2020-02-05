@@ -4,7 +4,7 @@ from account.models import Account
 
 
 class Channel(models.Model):
-    picture = models.ImageField(upload_to='media', height_field=None, width_field=None, max_length=None , default='media/default_avatar.png')
+    picture = models.ImageField(height_field=None, width_field=None, max_length=None , default='media/default_avatar.png')
     admin = models.ForeignKey(Account, null=False, on_delete=models.CASCADE, related_name = 'admin')
     followers = models.ManyToManyField(Account, related_name='authours')
     accounts = models.ManyToManyField(Account, blank=True)

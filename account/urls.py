@@ -29,7 +29,7 @@ urlpatterns = [
     path('login/',ObtainAuthTokenView.as_view(), name="login"),
 	path('register/', registration_view, name="register"),
 	path('logout/', Logout.as_view(),name='logout'),
-	path('addfollower/', remove_follower),
+	path('addfollower/', add_follower),
 	path('removefollower/', remove_follower)
 
 ]

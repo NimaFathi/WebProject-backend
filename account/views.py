@@ -71,8 +71,8 @@ class GoogleView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 @api_view(['POST', ])
-@permission_classes([])
-@authentication_classes([])
+#@permission_classes([])
+#@authentication_classes([])
 def registration_view(request):
 
     data = {}
@@ -80,18 +80,24 @@ def registration_view(request):
     if validate_email(email) != None:
         data['error_message'] = 'That email is already in use.'
         data['response'] = 'Error'
-        return Response(data=data, status=status.HTTP_403_FORBIDDEN)
+        print(data)
+        print("bbbb")
+        return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
     username = request.data.get('username', '0')
     if validate_username(username) != None:
         data['error_message'] = 'That username is already in use.'
         data['response'] = 'Error'
+        print(data)
+        print("aaaa")
         return Response(data=data,status=status.HTTP_403_FORBIDDEN)
     password = request.data.get('password', '0')
     val = validate_password(password)
     if val[0] == None:
         data['error_message'] = val[1]
         data['response'] = 'Error'
+        print(data)
+        print("sfdfs")
         return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     serializer = RegistrationSerializer(data=request.data)
@@ -99,16 +105,20 @@ def registration_view(request):
     if serializer.is_valid():
         account = serializer.save()
         account.save()
+        ser = RegistrationSerializer(account)
+        print(ser)
+        print("ccccc")
+        data = ser.data
         data['response'] = 'successfully registered new user.'
-        data['email'] = account.email
-        data['username'] = account.username
-        data['pk'] = account.pk
         x = get_tokens_for_user(account)
         data['refresh'] = x.get('refresh')
         data['access'] = x.get('access')
         return Response(data=data, status=status.HTTP_200_OK)
     else:
         data = serializer.errors
+        print(data)
+        print("dddd")
+
         return Response(data=data, status=status.HTTP_403_FORBIDDEN)
     return Response(data=data,status=status.HTTP_501_NOT_IMPLEMENTED)
 
@@ -294,9 +304,9 @@ def add_follower(request):
     following_id = request.data['following_id']
     follower = Account.objects.get(pk=follower_id)
     following = Account.objects.get(pk=following_id)
-    follower.followings.add(following)
     following.followers.add(follower)
-    follow_notification.objects.create(follower=follower, following=following)
+    # follow_notification.objects.create(follower=follower, following=following)
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['POST', ])
@@ -308,4 +318,5 @@ def remove_follower(request):
     follower.followings.remove(following)
     following.followers.remove(follower)
     follow_notification.objects.filter(follower=follower, following=following).delete()
+    return Response(status=status.HTTP_200_OK)
 

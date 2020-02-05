@@ -11,7 +11,7 @@ from copy import copy
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated, ])
+# @permission_classes([IsAuthenticated, ])
 def follow_notifications(request):
     user_id = request.query_params.get('user_id', None)
     user_account = Account.objects.get(pk=user_id)
@@ -22,7 +22,7 @@ def follow_notifications(request):
 
 
 @api_view(['GET', ])
-@permission_classes([IsAuthenticated, ])
+# @permission_classes([IsAuthenticated, ])
 def comment_notifications(request):
     user_id = request.query_params.get('user_id', None)
     new_comments = copy(Comment.objects.filter(is_seen=0, post__author__id=user_id))

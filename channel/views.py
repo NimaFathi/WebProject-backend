@@ -11,14 +11,21 @@ from account.models import Account
 from channel.serializers import channel_user_serializer
 
 
+# @api_view(['POST', ])
+# # @permission_classes([IsAuthenticated, ])
+# def create_channel(request):
+#     serializer = ChannelSerializer(data=request.data, partial=True)
+#     if serializer.is_valid():
+#         serializer.save()
+#     return Response(serializer.data)
+
 @api_view(['POST', ])
-# @permission_classes([IsAuthenticated, ])
 def create_channel(request):
     serializer = ChannelSerializer(data=request.data, partial=True)
     if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
-
+        channel = serializer.save()
+        ser = ChannelSerializer(channel)
+    return Response(ser.data)
 
 @api_view(['PUT', ])
 # @permission_classes([IsAuthenticated, ])

@@ -29,14 +29,14 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Account
-		fields = ['pk', 'email', 'username','following', 'avatar' ]
+		fields = ['pk', 'email', 'username','followers', 'avatar' ]
 
 
 class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['email', 'username', 'password', 'occupy', 'bio', 'card_set']
+        fields = '__all__'
 
 
 
