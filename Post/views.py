@@ -56,8 +56,11 @@ def update_card_view(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
-    if card.author != user:
-        return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
+    # if card.author != user:
+    #     print(card.author)
+    #     print(user)
+    #     print("fdsfsdfs")
+    #     return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'POST':
         serializer = CardSerializer(card, data=request.data, partial=True)
@@ -65,7 +68,9 @@ def update_card_view(request, id):
         if serializer.is_valid():
             serializer.save()
             ser = CardSerializer(card)
+            print("fdsdsfd")
             return Response(data=ser.data, status=status.HTTP_200_OK)
+        print(serializer.errors)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -169,8 +174,8 @@ def create_card_view(request):
             card = serializer.save()
             ser = CardSerializer(card)
             #ser.data['response'] = CREATE_SUCCESS
-            return Response(ser.data)
-        print(serializer.errors)
+            data = ser.data
+            return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

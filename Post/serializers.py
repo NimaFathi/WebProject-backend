@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import Comment, Card
 from account.serializers import AccountPropertiesSerializer
 from django.http import JsonResponse
-from versatileimagefield.serializers import VersatileImageFieldSerializer
 class search_card_serializer(serializers.ModelSerializer):
     class Meta:
         model = Card
@@ -14,13 +13,13 @@ class CardSerializer(serializers.ModelSerializer):
     authorId = serializers.SerializerMethodField("get_authorId_from_author")
     creatorName = serializers.SerializerMethodField("get_creatorName_from_author")
     profilePicture = serializers.SerializerMethodField("get_creatorPicture_from_author")
-    #pictureContent = VersatileImageFieldSerializer(sizes='pic')
-
+    
     class Meta:
         model = Card
         fields = (
-        'pk', 'textContent', 'adminId', 'author', 'authorId', 'title', 'creatorName', 'profilePicture',
+        'pk', 'textContent', 'adminId', 'author','authorId', 'title', 'creatorName' , 'profilePicture',
         'comment_set', 'voteUp', 'voteDown', 'pictureContent', 'channel')
+
 
     def get_creatorPicture_from_author(self, card):
         creatorPicture = str(card.author.avatar)
@@ -28,7 +27,7 @@ class CardSerializer(serializers.ModelSerializer):
 
     def get_adminId_from_channel(self, card):
         if card.channel is not None:
-            queryset     = card.channel.admin.pk
+            queryset = card.channel.admin.pk
             print(queryset)
             return queryset
         else:
@@ -46,11 +45,11 @@ class CommentSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField("get_username_from_author")
     userId = serializers.SerializerMethodField("get_userId_from_author")
     profilePicture = serializers.SerializerMethodField("get_creatorPicture_from_author")
-
+    # post = serializers.HyperlinkedModelSerializer(many=True)
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'author', 'parentId', 'userId', 'username', 'content', 'profilePicture', 'voteUp', 'voteDown', 'time',)
+        fields = ('pk', 'post', 'author', 'parentId', 'userId', 'username', 'content', 'profilePicture', 'voteUp', 'voteDown', 'time', 'post')
 
     def get_username_from_author(self, comment):
         username = comment.author.username

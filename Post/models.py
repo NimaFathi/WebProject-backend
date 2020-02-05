@@ -1,7 +1,6 @@
 from django.db import models
 from account.models import Account
 from channel.models import Channel
-from versatileimagefield.fields import VersatileImageField, PPOIField
 
 
 def upload(instance):
@@ -14,11 +13,16 @@ class Card(models.Model):
     author = models.ForeignKey(Account, null=False , on_delete=models.CASCADE, related_name='card_author')
     channel = models.ForeignKey(Channel, blank=True , null=True, on_delete=models.CASCADE, related_name='for_channel')
     title = models.CharField(max_length=100)
-    pictureContent = VersatileImageField('pictureContent', upload_to=upload, default='images/default_avatar.png')
-    voteUp = models.ManyToManyField(Account, blank=True)
+    pictureContent = models.ImageField(default='media/default_avatar.png' )
+    voteUp = models.ManyToManyField(Account , blank=True)
     voteDown = models.ManyToManyField(Account, related_name='voteDown', blank=True)
     date_Modified = models.DateTimeField(auto_now_add=True)
-    
+
+
+class Image(models.Model):
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images', default='images/default_avatar.ong') 
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Card, on_delete=models.CASCADE)
