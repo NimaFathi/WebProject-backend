@@ -14,7 +14,7 @@ urlpatterns = [
     path('comment/<int:id>', detail_comment_view, name="detail_comment"),
     path('comment/update/<int:id>/', update_comment_view, name="update_comment"),
     path('comment/delete/<int:id>', delete_comment_view, name="delete_comment"),
-    path('comment/create/', create_comment_view, name="create_comment"),
+    path('comment/create/', create_comment_view, name="create_comment"),#
     path('comment/is_author/<int:id>', is_author_of_comment, name="is_author_comment"),
 
 ]

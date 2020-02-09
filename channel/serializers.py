@@ -26,3 +26,8 @@ class channel_view_serializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
         fields = ('pk', 'name', 'picture', 'description', 'rules', 'followers')
+
+class get_followers_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Channel
+        fields = ['followers']

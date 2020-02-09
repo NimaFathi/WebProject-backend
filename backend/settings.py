@@ -25,7 +25,8 @@ SECRET_KEY = 'stp2lqw9fdnx_%thr=p+e+vtvvy5((wy2r2shlj91c=_^1-ckc'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '*'
+    '*',
+    'localhost:8000'
 ]
 
 # Application definition
@@ -51,15 +52,14 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'rest_framework_social_oauth2',
     'versatileimagefield',
+    'corsheaders'
     ]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-        #'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        #'rest_framework_social_oauth2.authentication.SocialAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.IsAuthenticated',
@@ -79,6 +79,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -165,8 +167,8 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     
 
-    # django-rest-framework-social-oauth2
-    #'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    #'django-rest-framework-social-oauth2'
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
 
     # Django
     'django.contrib.auth.backends.ModelBackend',
@@ -196,30 +198,30 @@ LOGIN_REDIRECT_URL = 'localhost:8000/mainpage'
 LOGOUT_REDIRECT_URL = 'localhost:8000/mainpage'
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-#
-# JWT_AUTH = {
-#     # how long the original token is valid for
-#     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
-#
-#     # allow refreshing of tokens
-#     'JWT_ALLOW_REFRESH': True,
-#
-#     # this is the maximum time AFTER the token was issued that
-#     # it can be refreshed.  exprired tokens can't be refreshed.
-#     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
-# }
 
-# JWT_AUTH = {
-#     # how long the original token is valid for
-#     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
+JWT_AUTH = {
+    # how long the original token is valid for
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
 
-#     # allow refreshing of tokens
-#     'JWT_ALLOW_REFRESH': True,
+    # allow refreshing of tokens
+    'JWT_ALLOW_REFRESH': True,
 
-#     # this is the maximum time AFTER the token was issued that
-#     # it can be refreshed.  exprired tokens can't be refreshed.
-#     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
-# }
+    # this is the maximum time AFTER the token was issued that
+    # it can be refreshed.  exprired tokens can't be refreshed.
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+}
+
+JWT_AUTH = {
+    # how long the original token is valid for
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
+
+    # allow refreshing of tokens
+    'JWT_ALLOW_REFRESH': True,
+
+    # this is the maximum time AFTER the token was issued that
+    # it can be refreshed.  exprired tokens can't be refreshed.
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+}
 
 
 # MEDIA_URL = os.path.join(BASE_DIR,'images/')

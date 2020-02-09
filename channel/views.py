@@ -8,8 +8,8 @@ from Post.models import Card
 from Post.serializers import search_card_serializer, CardSerializer
 from account.serializers import account_search_serializer
 from account.models import Account
-from channel.serializers import channel_user_serializer
-
+from channel.serializers import channel_user_serializer, get_followers_serializer
+from copy import copy
 
 # @api_view(['POST', ])
 # # @permission_classes([IsAuthenticated, ])
@@ -19,7 +19,9 @@ from channel.serializers import channel_user_serializer
 #         serializer.save()
 #     return Response(serializer.data)
 
+
 @api_view(['POST', ])
+@permission_classes([IsAuthenticated,])
 def create_channel(request):
     serializer = ChannelSerializer(data=request.data, partial=True)
     if serializer.is_valid():
@@ -27,22 +29,51 @@ def create_channel(request):
         ser = ChannelSerializer(channel)
     return Response(ser.data)
 
+
 @api_view(['PUT', ])
-# @permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def edit_channel(request):
-    channel_id = request.query_params.get('channel_id', None)
+    channel_id = request.data['channel_id']
     try:
         channel = Channel.objects.get(pk=channel_id)
     except Channel.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-    # if request.user != channel.admin:
-    #     return Response(status=status.HTTP_401_UNAUTHORIZED)
-
+    channel_authors = copy(channel.accounts.all())
     serializer = ChannelSerializer(channel, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
-    return Response(channel.name)
+    channel.accounts.add(*channel_authors)
+    return Response(serializer.data)
+
+
+@api_view(['DELETE', ])
+def remove_author(request):
+    channel_id = request.data['channel_id']
+    user_id = request.data['user_id']
+    user = Account.objects.get(pk=user_id)
+    channel = Channel.objects.get(pk=channel_id)
+    channel.accounts.remove(user)
+    return Response(status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST', ])
+def add_follower(request):
+    channel_id = request.data['channel_id']
+    user_id = request.data['user_id']
+    channel = Channel.objects.get(pk=channel_id)
+    user = Account.objects.get(pk=user_id)
+    channel.followers.add(user)
+    return Response(status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['DELETE', ])
+def remove_follower(request):
+    channel_id = request.data['channel_id']
+    user_id = request.data['user_id']
+    channel = Channel.objects.get(pk=channel_id)
+    user = Account.objects.get(pk=user_id)
+    channel.followers.remove(user)
+    return Response(status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['GET', ])
@@ -68,7 +99,14 @@ def user_channels(request):
         account = Account.objects.get(pk=user_id)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     user_channels = Channel.objects.filter(admin=account)
     serializer = channel_user_serializer(user_channels, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET', ])
+def get_followers(request):
+    channel_id = request.query_params.get('channel_id', None)
+    channel = Channel.objects.get(pk=channel_id)
+    followers_serializer = get_followers_serializer(channel)
+    return Response(followers_serializer.data)

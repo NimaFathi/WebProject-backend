@@ -22,7 +22,7 @@ CREATE_SUCCESS = 'created'
 
 
 @api_view(['GET', ])
-#@permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def detail_card_view(request, id):
     try:
         card = Card.objects.get(id=id)
@@ -31,11 +31,14 @@ def detail_card_view(request, id):
 
     if request.method == 'GET':
         serializer = CardSerializer(card)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        data = serializer.data
+        if card.channel != None:
+            data['profilePicture'] = card.channel.picture.url
+        return Response(data=data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', ])
-#@permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def detail_comment_view(request, id):
     try:
         comment = Comment.objects.get(id=id)
@@ -47,88 +50,72 @@ def detail_comment_view(request, id):
         return Response(data=serializer.data,status=status.HTTP_200_OK)
 
 
-# @api_view(['PUT', ])
-# #@permission_classes((IsAuthenticated,))
-# def update_card_view(request, id):
-#     try:
-#         card = Card.objects.get(id=id)
-#     except Card.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     # user = request.user
-#     # if card.author != user:
-#     #     print(card.author)
-#     #     print(user)
-#     #     print("fdsfsdfs")
-#     #     return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
-#
-#     if request.method == 'PUT':
-#         serializer = CardSerializer(card, data=request.data, partial=True)
-#         data = {}
-#         if serializer.is_valid():
-#             serializer.save()
-#             ser = CardSerializer(card)
-#             print("fdsdsfd")
-#             return Response(data=ser.data, status=status.HTTP_200_OK)
-#         print(serializer.errors)
-#         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
 
-@api_view(['POST', ])
-# @permission_classes((IsAuthenticated,))
+@api_view(['PUT', ])
+@permission_classes((IsAuthenticated,))
 def update_card_view(request, id):
+    flag = 0
     try:
         card = Card.objects.get(id=id)
     except Card.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    if card.channel != None:
+        my_list = list(card.channel.accounts.all())
+        for x in my_list:
+            if request.user == x:
+                flag += 1
+                break
+        if request.user == card.channel.admin:
+            flag += 1
+        if request.user == card.author:
+            flag += 1
+        if flag == 0:
+             return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = request.user
-    # if card.author != user:
-    #     return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
-
-    if request.method == 'POST':
-        print(request.data)
-        serializer = CardSerializer(card, data=request.data, partial=True)
-        data = {}
+    if request.method == 'PUT':
+        data = request.data
+        serializer = CardSerializer(card, data=data, partial=True)
         if serializer.is_valid():
+            if 'voteUp' not in request.data:
+                serializer.validated_data['voteUp'] = []
+            if 'voteDown' not in request.data:
+                serializer.validated_data['voteDown'] = []
             serializer.save()
+            data = serializer.data
             data['response'] = UPDATE_SUCCESS
-            data['pk'] = card.pk
-            data['title'] = card.title
-            data['textContent'] = card.textContent
-            image_url = str(request.build_absolute_uri(card.pictureContent.url))
-            if "?" in image_url:
-                image_url = image_url[:image_url.rfind("?")]
-            x = image_url.split("localhost:8000/")
-            data['pictureContent'] = x[1]
-            data['username'] = card.author.username
+            print(serializer.data)
             return Response(data=data)
-#return Response(data=ser.data, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST', ])
-#@permission_classes((IsAuthenticated,))
+@api_view(['PUT', ])
+@permission_classes((IsAuthenticated,))
 def update_comment_view(request, id):
     try:
         comment = Comment.objects.get(id=id)
     except Comment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    # user = request.user
-    # if comment.author != user:
-    #     return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
 
-    if request.method == 'POST':
+    user = request.user
+    if comment.author != user:
+         return Response({'response': "you don't have permission to edit."}, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'PUT':
         serializer = CommentSerializer(comment, data=request.data, partial=True)
         data = {}
         if serializer.is_valid():
             serializer.save()
-            ser = CommentSerializer(comment)
-            return Response(data=ser.data, status=status.HTTP_200_OK)
+            if 'voteUp' not in request.data:
+                serializer.validated_data['voteUp'] = []
+            if 'voteDown' not in request.data:
+                serializer.validated_data['voteDown'] = []
+            serializer.save()
+            data = serializer.data
+            data['response'] = UPDATE_SUCCESS
+            return Response(data=data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET', ])
-#@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def is_author_of_card(request, id):
 
     try:
@@ -146,7 +133,7 @@ def is_author_of_card(request, id):
 
 
 @api_view(['GET', ])
-#@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def is_author_of_comment(request, id):
     try:
         comment = Comment.objects.get(pk=id)
@@ -162,15 +149,15 @@ def is_author_of_comment(request, id):
     return Response(data=data,status=status.HTTP_200_OK)
 
 
-@api_view(['GET', ])
-#@permission_classes((IsAuthenticated,))
+@api_view(['DELETE', ])
+@permission_classes((IsAuthenticated,))
 def delete_card_view(request, id):
     try:
         card = Card.objects.get(pk=id)
     except Card.DoesNotExist:
         return Response({'response': "You don't have permission to delete."},status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == "GET":
+    if request.method == "DELETE":
         operation = card.delete()
         data = {}
         if operation:
@@ -178,15 +165,15 @@ def delete_card_view(request, id):
             return Response(data=data,status=status.HTTP_200_OK)
 
 
-@api_view(['GET', ])
-#@permission_classes((IsAuthenticated,))
+@api_view(['DELETE', ])
+@permission_classes((IsAuthenticated,))
 def delete_comment_view(request, id):
     try:
         comment = Comment.objects.get(pk=id)
     except Comment.DoesNotExist:
         return Response(data={'response': "You don't have permission to delete."},status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == "GET":
+    if request.method == "DELETE":
         operation = comment.delete()
         data = {}
         if operation:
@@ -195,34 +182,33 @@ def delete_comment_view(request, id):
 
 
 @api_view(['POST', ])
-#@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def create_card_view(request):
     if request.method == 'POST':
         data = request.data
-        #data['author'] = request.user.pk
         serializer = CardSerializer(data=data)
         data = {}
         if serializer.is_valid():
             card = serializer.save()
             ser = CardSerializer(card)
-            #ser.data['response'] = CREATE_SUCCESS
             data = ser.data
+            data['response'] = CREATE_SUCCESS
+            if card.channel != None:
+                data['profilePicture'] = card.channel.picture.url
             return Response(data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['POST', ])
-#@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def create_comment_view(request):
     if request.method == 'POST':
         data = request.data
-        #data['author'] = request.user.pk
         serializer = CommentSerializer(data=data)
 
         data = {}
         if serializer.is_valid():
             comment = serializer.save()
             ser = CommentSerializer(comment)
-            return Response(data=ser.data,status=status.HTTP_200_OK)
+            return Response(data=ser.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

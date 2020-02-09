@@ -18,7 +18,7 @@ from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 urlpatterns = [
     path('raeis/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls'), name='rest_framework'),
-    path('UserProfile/', include('UserProfile.urls')),
+    path('userprofile/', include('UserProfile.urls')),
     path('post/', include('Post.urls')),
     path('channel/', include('channel.urls')),
     path('account/', include('account.urls')),

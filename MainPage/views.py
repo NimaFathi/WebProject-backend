@@ -6,25 +6,24 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from account.models import Account
-
+from notifications.models import follow_notification
 
 @api_view(['GET', ])
-# @permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def hottest(request):
     try:
         queryset = Card.objects.annotate(q_count=Count('voteUp')).order_by('-q_count')[:10]
     except queryset.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     serializer = CardSerializer(queryset, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET', ])
-# @permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def newest(request):
     try:
-        queryset = Card.objects.all().order_by('date_Modified')[:10]
+        queryset = Card.objects.all().order_by('-date_Modified')[:10]
     except queryset.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -33,24 +32,22 @@ def newest(request):
 
 
 @api_view(['GET', ])
-# @permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def following(request):
     user_id = request.query_params.get('user_id', None)
     account1 = Account.objects.get(pk=user_id)
     channels = account1.authours.all()
     channel_followings = Card.objects.filter(channel__in=channels)
-    people_followings = Card.objects.filter(author__in=account1.following.all())
-    try:
-        followings = people_followings.union(channel_followings).order_by('date_Modified')
-    except people_followings.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    peoples_following = follow_notification.objects.filter(follower=account1).values('following')
+    people_followings = Card.objects.filter(author__in=peoples_following)
+    followings = people_followings.union(channel_followings).order_by('date_Modified')
 
     serializer = CardSerializer(followings, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET', ])
-# @permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def contributes(request):
     user_id = request.query_params.get('user_id', None)
     account1 = Account.objects.get(pk=user_id)

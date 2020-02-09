@@ -7,26 +7,34 @@ from .models import follow_notification
 from Post.serializers import CommentSerializer
 from account.serializers import AccountPropertiesSerializer, account_search_serializer
 from copy import copy
-from .serializer import notification_serializer
+from .serializer import notification_serializer_notif
 # Create your views here.
 
 
 @api_view(['GET', ])
-# @permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def follow_notifications(request):
     user_id = request.query_params.get('user_id', None)
     user_account = Account.objects.get(pk=user_id)
     new_followings_accounts = copy(follow_notification.objects.filter(following=user_account, is_used=0))
     follow_notification.objects.filter(following=user_account).update(is_used=1)
-    serializer = notification_serializer(new_followings_accounts, many=True)
+    serializer = notification_serializer_notif(new_followings_accounts, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET', ])
-# @permission_classes([IsAuthenticated, ])
+@permission_classes([IsAuthenticated, ])
 def comment_notifications(request):
     user_id = request.query_params.get('user_id', None)
     new_comments = copy(Comment.objects.filter(is_seen=0, post__author__id=user_id))
     Comment.objects.filter(is_seen=0, post__author__id=user_id).update(is_seen=1)
-    serializer = AccountPropertiesSerializer(new_comments, many=True)
+    serializer = CommentSerializer(new_comments, many=True)
     return Response(serializer.data)
+
+@api_view(['GET', ])
+def notifications_count(request):
+    user_id = request.query_params.get('user_id', None)
+    user_account = Account.objects.get(pk=user_id)
+    new_comments = copy(Comment.objects.filter(is_seen=0, post__author__id=user_id))
+    new_followings_accounts = follow_notification.objects.filter(following=user_account, is_used=0)
+    return Response(len(new_comments) + len(new_followings_accounts))

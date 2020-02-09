@@ -50,7 +50,7 @@ class Account(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     bio = models.CharField(max_length=100, default="new to mediap")
     occupy = models.CharField(max_length=100, default="student")
-    avatar = models.ImageField('avatar',upload_to='media', default='media/default_avatar.png')
+    avatar = models.ImageField(default='media/default_avatar.png')
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

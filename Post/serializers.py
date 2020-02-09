@@ -22,8 +22,10 @@ class CardSerializer(serializers.ModelSerializer):
 
 
     def get_creatorPicture_from_author(self, card):
-        creatorPicture = str(card.author.avatar)
-        return creatorPicture
+        if card.channel is not None:
+            return card.channel.picture.url
+        else:
+            return card.author.avatar.url
 
     def get_adminId_from_channel(self, card):
         if card.channel is not None:

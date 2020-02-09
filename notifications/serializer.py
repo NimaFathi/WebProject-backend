@@ -7,4 +7,9 @@ class notification_serializer(serializers.ModelSerializer):
         model = follow_notification
         fields = ['follower']
 
+
+class notification_serializer_notif(serializers.ModelSerializer):
+    class Meta:
+        model = follow_notification
+        fields = ['follower']
         depth = 1

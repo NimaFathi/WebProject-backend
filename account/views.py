@@ -71,8 +71,8 @@ class GoogleView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 @api_view(['POST', ])
-#@permission_classes([])
-#@authentication_classes([])
+@permission_classes([IsAuthenticated, ])
+@authentication_classes([])
 def registration_view(request):
 
     data = {}
@@ -80,24 +80,18 @@ def registration_view(request):
     if validate_email(email) != None:
         data['error_message'] = 'That email is already in use.'
         data['response'] = 'Error'
-        print(data)
-        print("bbbb")
         return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
     username = request.data.get('username', '0')
     if validate_username(username) != None:
         data['error_message'] = 'That username is already in use.'
         data['response'] = 'Error'
-        print(data)
-        print("aaaa")
         return Response(data=data,status=status.HTTP_403_FORBIDDEN)
     password = request.data.get('password', '0')
     val = validate_password(password)
     if val[0] == None:
         data['error_message'] = val[1]
         data['response'] = 'Error'
-        print(data)
-        print("sfdfs")
         return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     serializer = RegistrationSerializer(data=request.data)
@@ -106,18 +100,18 @@ def registration_view(request):
         account = serializer.save()
         account.save()
         ser = RegistrationSerializer(account)
-        print(ser)
-        print("ccccc")
         data = ser.data
         data['response'] = 'successfully registered new user.'
         x = get_tokens_for_user(account)
         data['refresh'] = x.get('refresh')
         data['access'] = x.get('access')
+        data['userId'] = account.pk
+        data['profilePicture'] = account.avatar.url
+        data['email'] = account.email
+        data['username'] = account.username
         return Response(data=data, status=status.HTTP_200_OK)
     else:
         data = serializer.errors
-        print(data)
-        print("dddd")
 
         return Response(data=data, status=status.HTTP_403_FORBIDDEN)
     return Response(data=data,status=status.HTTP_501_NOT_IMPLEMENTED)
@@ -233,7 +227,6 @@ class ObtainAuthTokenView(APIView):
             context['pk'] = account.pk
             context['email'] = email.lower()
             context['image'] = str(account.avatar)
-            print(account.avatar)
             x = get_tokens_for_user(account)
             context['refresh'] = x['refresh']
             context['access'] = x['access']
@@ -247,7 +240,7 @@ class ObtainAuthTokenView(APIView):
 
 
 @api_view(['GET', ])
-@permission_classes([])
+@permission_classes([IsAuthenticated, ])
 @authentication_classes([])
 def does_account_exist_view(request):
 
@@ -261,7 +254,6 @@ def does_account_exist_view(request):
             data['response'] = "Account does not exist"
             return Response(data=data, status=status.HTTP_403_FORBIDDEN)
         return Response(data,status=status.HTTP_501_NOT_IMPLEMENTED)
-
 
 
 class ChangePasswordView(UpdateAPIView):
@@ -299,6 +291,7 @@ class ChangePasswordView(UpdateAPIView):
 
 
 @api_view(['POST', ])
+@permission_classes([IsAuthenticated,])
 def add_follower(request):
     follower_id = request.data['follower_id']
     following_id = request.data['following_id']
@@ -308,7 +301,8 @@ def add_follower(request):
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST', ])
+@api_view(['DELETE', ])
+@permission_classes([IsAuthenticated, ])
 def remove_follower(request):
     follower_id = request.data['follower_id']
     following_id = request.data['following_id']
