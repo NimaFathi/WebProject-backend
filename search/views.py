@@ -13,7 +13,7 @@ from channel.serializers import search_channel_serializer
 # @permission_classes([IsAuthenticated])
 def search_posts(request):
     query = request.query_params.get('q', None)
-    posts = Card.objects.filter(title=query)
+    posts = Card.objects.filter(textContent__contains=query)
     serializer = search_card_serializer(posts, many=True)
     return Response(serializer.data)
 

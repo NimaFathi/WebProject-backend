@@ -47,6 +47,7 @@ def edit_channel(request):
 
 
 @api_view(['DELETE', ])
+@permission_classes([IsAuthenticated,])
 def remove_author(request):
     channel_id = request.data['channel_id']
     user_id = request.data['user_id']
@@ -57,6 +58,7 @@ def remove_author(request):
 
 
 @api_view(['POST', ])
+@permission_classes([IsAuthenticated,])
 def add_follower(request):
     channel_id = request.data['channel_id']
     user_id = request.data['user_id']
@@ -67,6 +69,7 @@ def add_follower(request):
 
 
 @api_view(['DELETE', ])
+@permission_classes([IsAuthenticated,])
 def remove_follower(request):
     channel_id = request.data['channel_id']
     user_id = request.data['user_id']
@@ -77,6 +80,7 @@ def remove_follower(request):
 
 
 @api_view(['GET', ])
+@permission_classes([IsAuthenticated,])
 def channel_view(request):
     channel_id = request.query_params.get('channel_id', None)
     try:
@@ -93,6 +97,7 @@ def channel_view(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated,])
 def user_channels(request):
     user_id = request.query_params.get('user_id', None)
     try:
@@ -105,6 +110,7 @@ def user_channels(request):
 
 
 @api_view(['GET', ])
+@permission_classes([IsAuthenticated,])
 def get_followers(request):
     channel_id = request.query_params.get('channel_id', None)
     channel = Channel.objects.get(pk=channel_id)

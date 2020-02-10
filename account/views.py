@@ -71,10 +71,9 @@ class GoogleView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 @api_view(['POST', ])
-@permission_classes([IsAuthenticated, ])
 @authentication_classes([])
 def registration_view(request):
-
+    print('s')
     data = {}
     email = request.data.get('email', '0').lower()
     if validate_email(email) != None:
@@ -90,6 +89,7 @@ def registration_view(request):
     password = request.data.get('password', '0')
     val = validate_password(password)
     if val[0] == None:
+        print('s')
         data['error_message'] = val[1]
         data['response'] = 'Error'
         return Response(data, status=status.HTTP_403_FORBIDDEN)
@@ -191,7 +191,7 @@ def account_properties_view(request):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['PUT',])
+@api_view(['PUT', ])
 @permission_classes((IsAuthenticated, ))
 def update_account_view(request):
 
@@ -261,7 +261,7 @@ class ChangePasswordView(UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     model = Account
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (TokenAuthentication,)
+    # authentication_classes = (TokenAuthentication,)
 
     def get_object(self, queryset=None):
         obj = self.request.user
@@ -285,13 +285,13 @@ class ChangePasswordView(UpdateAPIView):
     # set_password also hashes the password that the user will get
             self.object.set_password(serializer.data.get("new_password"))
             self.object.save()
-            return Response({"response":"successfully changed password"}, status=status.HTTP_200_OK)
+            return Response({"response": "successfully changed password"}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST', ])
-@permission_classes([IsAuthenticated,])
+@permission_classes([IsAuthenticated, ])
 def add_follower(request):
     follower_id = request.data['follower_id']
     following_id = request.data['following_id']
