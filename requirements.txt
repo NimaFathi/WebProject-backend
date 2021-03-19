@@ -16,7 +16,7 @@ django-oauth-toolkit==1.2.0
 django-rest-framework-social-oauth2==1.1.0
 django-rest-passwordreset==1.1.0
 django-versatileimagefield==2.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-simplejwt==4.4.0
 FormEncode==1.3.1
 future==0.18.2
